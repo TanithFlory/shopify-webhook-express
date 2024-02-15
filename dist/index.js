@@ -53,21 +53,27 @@ app.get("/", (_req, res) => {
     return res.send("pong 🏓");
 });
 app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!req.body) {
-        return res
-            .status(400)
-            .json({ error: "Bad Request - Missing or empty request body" });
+    try {
+        if (!req.body) {
+            return res
+                .status(400)
+                .json({ error: "Bad Request - Missing or empty request body" });
+        }
+        const body = req.body;
+        console.log(body);
+        const { order_number, customer, line_items } = body;
+        for (const item of line_items) {
+            const isMatch = item.toLowerCase().includes("smart") &&
+                item.toLowerCase().includes("lock");
+            if (!isMatch)
+                continue;
+            callWifyApi(customer, order_number, line_items);
+        }
+        return res.status(200).json({ Message: "Success" });
     }
-    const body = req.body;
-    const { order_number, customer, line_items, } = body;
-    for (const item of line_items) {
-        const isMatch = item.toLowerCase().includes("smart") &&
-            item.toLowerCase().includes("lock");
-        if (!isMatch)
-            continue;
-        callWifyApi(customer, order_number, line_items);
+    catch (error) {
+        return res.status(500).json({ Message: "Error" });
     }
-    return res.status(200).json({ Message: "Success" });
 }));
 app.get("/ping", (_req, res) => {
     return res.send("pong 🏓");
