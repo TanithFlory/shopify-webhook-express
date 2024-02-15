@@ -63,8 +63,7 @@ app.get("/", (_req: Request, res: Response) => {
   return res.send("pong 🏓");
 });
 
-app.get("/orders-paid", async (req: Request, res: Response) => {
-  console.log("Route Hit");
+app.post("/orders-paid", async (req: Request, res: Response) => {
   if (!req.body) {
     return res
       .status(400)
@@ -73,8 +72,6 @@ app.get("/orders-paid", async (req: Request, res: Response) => {
   const body = req.body;
 
   const {
-    id,
-    current_subtotal_price,
     order_number,
     customer,
     line_items,
