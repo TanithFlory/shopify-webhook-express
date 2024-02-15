@@ -53,6 +53,11 @@ app.get("/", (_req, res) => {
     return res.send("pong 🏓");
 });
 app.get("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.body) {
+        return res
+            .status(400)
+            .json({ error: "Bad Request - Missing or empty request body" });
+    }
     const body = req.body;
     const { id, current_subtotal_price, order_number, customer, line_items, } = body;
     for (const item of line_items) {
