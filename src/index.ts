@@ -19,15 +19,15 @@ async function callWifyApi(
   order_number: number,
   line_items: line_items
 ) {
-  const {
-    first_name,
-    last_name,
-    state,
-    email,
-    default_address,
-  }: ICustomerDetails = customer;
+  const { first_name, last_name, email, default_address }: ICustomerDetails =
+    customer;
 
-  const { address1, address2, city, zip, phone }: IAddress = default_address;
+  const { address1, address2, city, zip, phone, province }: IAddress =
+    default_address;
+  const today = new Date();
+  const year = today.getFullYear().toString();
+  const month = (today.getMonth() + 1).toString().padStart(2, "0");
+  const day = today.getDate().toString();
 
   const installationDetails: OrderRequest = {
     cust_full_name: `${first_name} ${last_name}`,
@@ -37,11 +37,11 @@ async function callWifyApi(
     cust_line_1: address2 || "",
     cust_line_2: "",
     cust_pincode: zip,
-    cust_state: state,
+    cust_state: province,
     request_description: `${(line_items as any)[0].title} - installation`,
     "79a88c7b-c64f-46c4-a277-bc80efa1c154": order_number.toString(),
     service_provider_id: "315",
-    request_req_date: new Date("2022-03-08").toLocaleDateString("en-GB"),
+    request_req_date: `${year}-${month}-${day}`,
     request_priority: "Normal",
   };
 

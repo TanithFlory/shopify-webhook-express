@@ -16,7 +16,6 @@ export interface IProduct {
 export interface ICustomerDetails {
   first_name: string;
   last_name: string;
-  state: string;
   email: string;
   default_address: IAddress;
 }
@@ -26,7 +25,7 @@ export interface IAddress {
   address2?: string;
   city: string;
   phone: string;
-  // province: string;
+  province: string;
   zip: string;
 }
 
