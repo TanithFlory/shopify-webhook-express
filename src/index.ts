@@ -8,15 +8,11 @@ import {
   line_items,
 } from "./types";
 import getRawBody = require("raw-body");
-import bodyParser = require("body-parser");
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 8080;
-app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
 async function callWifyApi(
   customer: ICustomerDetails,
@@ -80,7 +76,6 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
         item.title.toLowerCase().includes("lock");
 
       if (!isMatch) continue;
-
       callWifyApi(customer, order_number, line_items);
     }
     return res.status(200).json({ Message: "Success" });

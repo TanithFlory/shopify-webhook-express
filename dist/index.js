@@ -15,13 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const getRawBody = require("raw-body");
-const bodyParser = require("body-parser");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 8080;
-app.use(express_1.default.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 function callWifyApi(customer, order_number, line_items) {
     return __awaiter(this, void 0, void 0, function* () {
         const { first_name, last_name, state, email, default_address, } = customer;
