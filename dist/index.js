@@ -53,6 +53,8 @@ app.get("/", (_req, res) => {
     return res.send("pong 🏓");
 });
 app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req);
+    return;
     try {
         if (!req.body) {
             return res
@@ -60,7 +62,6 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
                 .json({ error: "Bad Request - Missing or empty request body" });
         }
         const body = req.body;
-        console.log(body);
         const { order_number, customer, line_items } = body;
         for (const item of line_items) {
             const isMatch = item.toLowerCase().includes("smart") &&
