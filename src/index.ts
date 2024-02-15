@@ -63,7 +63,7 @@ app.get("/", (_req: Request, res: Response) => {
   return res.send("pong 🏓");
 });
 
-app.get("/orders-paid", async (req: Request, _res: Response) => {
+app.get("/orders-paid", async (req: Request, res: Response) => {
   const body = req.body;
 
   const {
@@ -83,6 +83,8 @@ app.get("/orders-paid", async (req: Request, _res: Response) => {
 
     callWifyApi(customer, order_number, line_items);
   }
+
+  return res.status(200).json({ Message: "Success" });
 });
 
 app.get("/ping", (_req: Request, res: Response) => {
