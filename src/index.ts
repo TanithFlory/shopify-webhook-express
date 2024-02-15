@@ -64,6 +64,12 @@ app.get("/", (_req: Request, res: Response) => {
 });
 
 app.get("/orders-paid", async (req: Request, res: Response) => {
+  console.log("Route Hit");
+  if (!req.body) {
+    return res
+      .status(400)
+      .json({ error: "Bad Request - Missing or empty request body" });
+  }
   const body = req.body;
 
   const {
