@@ -20,8 +20,12 @@ const app = (0, express_1.default)();
 const port = process.env.PORT || 8080;
 function callWifyApi(customer, order_number, line_items) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { first_name, last_name, state, email, default_address, } = customer;
-        const { address1, address2, city, zip, phone } = default_address;
+        const { first_name, last_name, email, default_address } = customer;
+        const { address1, address2, city, zip, phone, province } = default_address;
+        const today = new Date();
+        const year = today.getFullYear().toString();
+        const month = (today.getMonth() + 1).toString().padStart(2, "0");
+        const day = today.getDate().toString();
         const installationDetails = {
             cust_full_name: `${first_name} ${last_name}`,
             cust_mobile: phone,
@@ -30,11 +34,11 @@ function callWifyApi(customer, order_number, line_items) {
             cust_line_1: address2 || "",
             cust_line_2: "",
             cust_pincode: zip,
-            cust_state: state,
+            cust_state: province,
             request_description: `${line_items[0].title} - installation`,
             "79a88c7b-c64f-46c4-a277-bc80efa1c154": order_number.toString(),
             service_provider_id: "315",
-            request_req_date: new Date("2022-03-08").toLocaleDateString("en-GB"),
+            request_req_date: `${year}-${month}-${day}`,
             request_priority: "Normal",
         };
         console.log(installationDetails);
