@@ -54,17 +54,9 @@ app.get("/", (_req, res) => {
     return res.send("pong 🏓");
 });
 app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const body = yield getRawBody(req);
-    const details = JSON.parse(body.toString());
-    console.log(details);
-    return;
+    const rawBody = yield getRawBody(req);
+    const body = JSON.parse(rawBody.toString());
     try {
-        if (!req.body) {
-            return res
-                .status(400)
-                .json({ error: "Bad Request - Missing or empty request body" });
-        }
-        const body = req.body;
         const { order_number, customer, line_items } = body;
         for (const item of line_items) {
             const isMatch = item.toLowerCase().includes("smart") &&

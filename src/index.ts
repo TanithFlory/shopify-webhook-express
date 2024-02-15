@@ -7,6 +7,7 @@ import {
   OrderRequest,
   line_items,
 } from "./types";
+import getRawBody = require("raw-body");
 
 dotenv.config();
 
@@ -64,30 +65,25 @@ app.get("/", (_req: Request, res: Response) => {
 });
 
 app.post("/orders-paid", async (req: Request, res: Response) => {
-  if (!req.body) {
-    return res
-      .status(400)
-      .json({ error: "Bad Request - Missing or empty request body" });
+  const rawBody = await getRawBody(req);
+  const body = JSON.parse(rawBody.toString());
+
+  try {
+    const { order_number, customer, line_items }: IOrderDetails = body;
+
+    for (const item of line_items as any) {
+      const isMatch =
+        item.toLowerCase().includes("smart") &&
+        item.toLowerCase().includes("lock");
+
+      if (!isMatch) continue;
+
+      callWifyApi(customer, order_number, line_items);
+    }
+    return res.status(200).json({ Message: "Success" });
+  } catch (error) {
+    return res.status(500).json({ Message: "Error" });
   }
-  const body = req.body;
-
-  const {
-    order_number,
-    customer,
-    line_items,
-  }: IOrderDetails = body;
-
-  for (const item of line_items as any) {
-    const isMatch =
-      item.toLowerCase().includes("smart") &&
-      item.toLowerCase().includes("lock");
-
-    if (!isMatch) continue;
-
-    callWifyApi(customer, order_number, line_items);
-  }
-
-  return res.status(200).json({ Message: "Success" });
 });
 
 app.get("/ping", (_req: Request, res: Response) => {
