@@ -1,24 +1,88 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
+import {
+  IAddress,
+  ICustomerDetails,
+  IOrderDetails,
+  OrderRequest,
+  line_items,
+} from "./types";
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 8080;
 
+async function callWifyApi(
+  customer: ICustomerDetails,
+  order_number: number,
+  line_items: line_items
+) {
+  const {
+    first_name,
+    last_name,
+    state,
+    email,
+    default_address,
+  }: ICustomerDetails = customer;
+
+  const { address1, address2, city, zip, phone }: IAddress = default_address;
+
+  const installationDetails: OrderRequest = {
+    cust_full_name: `${first_name} ${last_name}`,
+    cust_mobile: phone,
+    cust_city: city,
+    cust_line_0: address1,
+    cust_line_1: address2 || "",
+    cust_line_2: "",
+    cust_pincode: zip,
+    cust_state: state,
+    request_description: `${(line_items as any)[0].title} - installation`,
+    "79a88c7b-c64f-46c4-a277-bc80efa1c154": order_number.toString(),
+    service_provider_id: "315",
+    request_req_date: new Date("2022-03-08").toLocaleDateString("en-GB"),
+    request_priority: "Normal",
+  };
+
+  console.log(installationDetails);
+
+  return;
+  const response = await fetch("https://uat-tms.wify.co.in/", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(installationDetails),
+  });
+
+  console.log(response);
+}
+
 app.get("/", (_req: Request, res: Response) => {
-  res.send("hi");
+  return res.send("pong 🏓");
 });
 
-app.get("/orders-paid", (req: Request, _res: Response) => {
+app.get("/orders-paid", async (req: Request, _res: Response) => {
   const body = req.body;
 
-  const { id, current_subtotal_price, order_number, customer } = body;
+  const {
+    id,
+    current_subtotal_price,
+    order_number,
+    customer,
+    line_items,
+  }: IOrderDetails = body;
 
-  const { first_name, last_name, state, email, phone, default_address } =
-    customer;
+  for (const item of line_items as any) {
+    const isMatch =
+      item.toLowerCase().includes("smart") &&
+      item.toLowerCase().includes("lock");
 
-  const { address1, address2, city, country, zip } = default_address;
+    if (!isMatch) continue;
+
+    callWifyApi(customer, order_number, line_items);
+  }
 });
 
 app.get("/ping", (_req: Request, res: Response) => {
