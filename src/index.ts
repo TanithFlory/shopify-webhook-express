@@ -8,11 +8,15 @@ import {
   line_items,
 } from "./types";
 import getRawBody = require("raw-body");
+import bodyParser = require("body-parser");
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 8080;
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 async function callWifyApi(
   customer: ICustomerDetails,
@@ -65,16 +69,15 @@ app.get("/", (_req: Request, res: Response) => {
 });
 
 app.post("/orders-paid", async (req: Request, res: Response) => {
-  const rawBody = await getRawBody(req);
-  const body = JSON.parse(rawBody.toString());
-
   try {
+    const rawBody = await getRawBody(req);
+    const body = JSON.parse(rawBody.toString());
     const { order_number, customer, line_items }: IOrderDetails = body;
 
     for (const item of line_items as any) {
       const isMatch =
-        item.toLowerCase().includes("smart") &&
-        item.toLowerCase().includes("lock");
+        item.title.toLowerCase().includes("smart") &&
+        item.title.toLowerCase().includes("lock");
 
       if (!isMatch) continue;
 
@@ -82,6 +85,7 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
     }
     return res.status(200).json({ Message: "Success" });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ Message: "Error" });
   }
 });

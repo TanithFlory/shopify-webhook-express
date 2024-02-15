@@ -15,9 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const getRawBody = require("raw-body");
+const bodyParser = require("body-parser");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 8080;
+app.use(express_1.default.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 function callWifyApi(customer, order_number, line_items) {
     return __awaiter(this, void 0, void 0, function* () {
         const { first_name, last_name, state, email, default_address, } = customer;
@@ -54,13 +58,13 @@ app.get("/", (_req, res) => {
     return res.send("pong 🏓");
 });
 app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const rawBody = yield getRawBody(req);
-    const body = JSON.parse(rawBody.toString());
     try {
+        const rawBody = yield getRawBody(req);
+        const body = JSON.parse(rawBody.toString());
         const { order_number, customer, line_items } = body;
         for (const item of line_items) {
-            const isMatch = item.toLowerCase().includes("smart") &&
-                item.toLowerCase().includes("lock");
+            const isMatch = item.title.toLowerCase().includes("smart") &&
+                item.title.toLowerCase().includes("lock");
             if (!isMatch)
                 continue;
             callWifyApi(customer, order_number, line_items);
@@ -68,6 +72,7 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
         return res.status(200).json({ Message: "Success" });
     }
     catch (error) {
+        console.log(error);
         return res.status(500).json({ Message: "Error" });
     }
 }));
