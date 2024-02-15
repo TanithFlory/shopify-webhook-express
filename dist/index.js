@@ -9,7 +9,7 @@ dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 8080;
 app.get("/", (_req, res) => {
-    res.send("/");
+    res.send("hi");
 });
 app.get("/orders-paid", (req, _res) => {
     const body = req.body;
