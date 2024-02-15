@@ -53,6 +53,7 @@ app.get("/", (_req, res) => {
     return res.send("pong 🏓");
 });
 app.get("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("Route Hit");
     if (!req.body) {
         return res
             .status(400)
