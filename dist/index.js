@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const getRawBody = require("raw-body");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 8080;
@@ -53,7 +54,9 @@ app.get("/", (_req, res) => {
     return res.send("pong 🏓");
 });
 app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req);
+    const body = yield getRawBody(req);
+    const details = JSON.parse(body.toString());
+    console.log(details);
     return;
     try {
         if (!req.body) {
