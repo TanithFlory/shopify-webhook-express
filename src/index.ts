@@ -45,9 +45,6 @@ async function callWifyApi(
     request_priority: "Normal",
   };
 
-  console.log(installationDetails);
-
-  return;
   const response = await fetch("https://uat-tms.wify.co.in/", {
     method: "POST",
     headers: {

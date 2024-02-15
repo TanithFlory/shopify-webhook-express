@@ -41,8 +41,6 @@ function callWifyApi(customer, order_number, line_items) {
             request_req_date: `${year}-${month}-${day}`,
             request_priority: "Normal",
         };
-        console.log(installationDetails);
-        return;
         const response = yield fetch("https://uat-tms.wify.co.in/", {
             method: "POST",
             headers: {
