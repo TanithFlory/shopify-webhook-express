@@ -16,6 +16,7 @@ app.get("/", (_req: Request, res: Response) => {
 
 app.post("/orders-paid", async (req: Request, res: Response) => {
   try {
+    console.log("");
     console.log(req.body);
     return;
     const rawBody = await getRawBody(req);
