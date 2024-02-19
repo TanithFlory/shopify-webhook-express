@@ -32,6 +32,11 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
         if (installationRequired) {
             yield (0, callWifyApi_1.callWifyApi)(order_number, id, res, installationDetails);
         }
+        if (!installationRequired) {
+            return res
+                .status(201)
+                .json({ message: "Installation not required, Entry not added." });
+        }
     }
     catch (error) {
         console.log(error);
