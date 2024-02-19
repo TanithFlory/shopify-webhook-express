@@ -9,8 +9,7 @@ export const newInstallation = async (
 ) => {
   try {
     await mongoConnection();
-    const response = await Installation.insertMany(tms_response);
-    console.log(response);
+    await Installation.insertMany(tms_response);
     return res.status(200).json({ message: "Entry added" });
   } catch (error) {
     console.log(error);
