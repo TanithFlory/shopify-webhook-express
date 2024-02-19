@@ -16,10 +16,16 @@ app.get("/", (_req: Request, res: Response) => {
 
 app.post("/orders-paid", async (req: Request, res: Response) => {
   try {
-    console.log("req.body", req.body);
     const rawBody = await getRawBody(req);
     const body = JSON.parse(rawBody.toString());
-    console.log("body", body);
+    const { order_number, customer, line_items, id }: IOrderDetails =
+      body[0].body;
+    const { installationRequired, installationDetails } =
+      getInstallationDetails(line_items, customer, order_number);
+
+    if (installationRequired) {
+      await callWifyApi(order_number, id, res, installationDetails);
+    }
   } catch (error) {
     console.log(error);
     return res.status(500).json({ Message: "Error" });

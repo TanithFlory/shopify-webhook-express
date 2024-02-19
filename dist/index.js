@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const getRawBody = require("raw-body");
+const getInstallationDetails_1 = __importDefault(require("./utils/getInstallationDetails"));
+const callWifyApi_1 = require("./utils/callWifyApi");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 8080;
@@ -25,7 +27,11 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
     try {
         const rawBody = yield getRawBody(req);
         const body = JSON.parse(rawBody.toString());
-        console.log("body", body);
+        const { order_number, customer, line_items, id } = body[0].body;
+        const { installationRequired, installationDetails } = (0, getInstallationDetails_1.default)(line_items, customer, order_number);
+        if (installationRequired) {
+            yield (0, callWifyApi_1.callWifyApi)(order_number, id, res, installationDetails);
+        }
     }
     catch (error) {
         console.log(error);
