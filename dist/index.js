@@ -46,7 +46,7 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
 app.post("/fulfillment-update", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const rawBody = yield getRawBody(req);
-        console.log(rawBody);
+        console.log(rawBody.toString());
     }
     catch (error) {
         console.log(error);
