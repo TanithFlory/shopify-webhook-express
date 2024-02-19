@@ -10,7 +10,7 @@ export async function callWifyApi(
 ) {
   try {
     const response = await fetch(
-      "https://uat-tms.wify.co.in/mockups/brands/order/315",
+      "https://uat-tms.wify.co.in/v1/brands/order/315/",
       {
         method: "POST",
         headers: {

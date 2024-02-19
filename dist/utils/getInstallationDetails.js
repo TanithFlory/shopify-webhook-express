@@ -16,7 +16,6 @@ function getInstallationDetails(line_items, customer, order_number) {
         cust_line_2: "",
         cust_pincode: zip,
         cust_state: province,
-        service_provider_id: "315",
         request_req_date: `${year}-${month}-${day}`,
         request_priority: "Normal",
         "79a88c7b-c64f-46c4-a277-bc80efa1c154": order_number.toString(),

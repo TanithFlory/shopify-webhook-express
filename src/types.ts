@@ -46,7 +46,6 @@ export type Batch = {
   request_description: string;
   request_req_date: string;
   request_priority: "Normal";
-  service_provider_id: "315";
 };
 
 export interface ITMS_RESPONSE {

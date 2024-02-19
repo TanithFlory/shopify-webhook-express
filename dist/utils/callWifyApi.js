@@ -14,7 +14,7 @@ const installationController_1 = require("../controllers/installationController"
 function callWifyApi(order_number, id, res, installationDetails) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const response = yield fetch("https://uat-tms.wify.co.in/mockups/brands/order/315", {
+            const response = yield fetch("https://uat-tms.wify.co.in/v1/brands/order/315/", {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,

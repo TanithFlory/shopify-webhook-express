@@ -19,7 +19,6 @@ const installationSchema = new mongoose.Schema({
     cust_line_2: String,
     cust_pincode: String,
     cust_state: String,
-    service_provider_id: String,
     request_req_date: String,
     request_priority: String,
     "79a88c7b-c64f-46c4-a277-bc80efa1c154": String,
