@@ -28,11 +28,11 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
         const rawBody = yield getRawBody(req);
         const body = JSON.parse(rawBody.toString());
         const { order_number, customer, line_items, id } = body;
+        console.log(body);
         const { installationRequired, installationDetails } = (0, getInstallationDetails_1.default)(line_items, customer, order_number);
         if (installationRequired) {
-            (0, callWifyApi_1.callWifyApi)(order_number, id, res, installationDetails);
+            yield (0, callWifyApi_1.callWifyApi)(order_number, id, res, installationDetails);
         }
-        return res.status(200).json({ Message: "Success" });
     }
     catch (error) {
         console.log(error);

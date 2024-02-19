@@ -20,14 +20,13 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
     const rawBody = await getRawBody(req);
     const body = JSON.parse(rawBody.toString());
     const { order_number, customer, line_items, id }: IOrderDetails = body;
+    console.log(body)
     const { installationRequired, installationDetails } =
       getInstallationDetails(line_items, customer, order_number);
 
     if (installationRequired) {
-      callWifyApi(order_number, id, res, installationDetails);
+      await callWifyApi(order_number, id, res, installationDetails);
     }
-
-    return res.status(200).json({ Message: "Success" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ Message: "Error" });

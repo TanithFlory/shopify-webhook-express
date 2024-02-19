@@ -21,13 +21,11 @@ export async function callWifyApi(
         body: JSON.stringify(installationDetails),
       }
     );
-    console.log(response);
     if (!response) return;
 
     const responseData = await response.json();
-    const tms_order_id = responseData.data.resp[0].tms_order_id;
 
-    await newInstallation(order_number, id, tms_order_id, res);
+    await newInstallation(responseData.data.resp, res);
   } catch (error) {
     console.log(error);
   }

@@ -48,3 +48,10 @@ export type Batch = {
   request_priority: "Normal";
   service_provider_id: "315";
 };
+
+export interface ITMS_RESPONSE {
+  tms_order_id: string;
+  input_data: {
+    "79a88c7b-c64f-46c4-a277-bc80efa1c154": string;
+  };
+}

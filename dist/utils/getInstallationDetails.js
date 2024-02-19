@@ -28,9 +28,10 @@ function getInstallationDetails(line_items, customer, order_number) {
     for (const item of line_items) {
         const isADoorLock = item.title.toLowerCase().includes("smart") &&
             item.title.toLowerCase().includes("lock");
-        if (!isADoorLock)
+        if (isADoorLock) {
+            installationDetails.batch_data.push(Object.assign(Object.assign({}, customerPersonDetails), { request_description: `${item.title} - installation` }));
             continue;
-        installationDetails.batch_data.push(Object.assign(Object.assign({}, customerPersonDetails), { request_description: `${item.title} - installation` }));
+        }
         if (!installationRequired) {
             installationRequired = item.title
                 .toLowerCase()

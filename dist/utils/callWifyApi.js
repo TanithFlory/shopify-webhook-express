@@ -23,12 +23,10 @@ function callWifyApi(order_number, id, res, installationDetails) {
                 },
                 body: JSON.stringify(installationDetails),
             });
-            console.log(response);
             if (!response)
                 return;
             const responseData = yield response.json();
-            const tms_order_id = responseData.data.resp[0].tms_order_id;
-            yield (0, installationController_1.newInstallation)(order_number, id, tms_order_id, res);
+            yield (0, installationController_1.newInstallation)(responseData.data.resp, res);
         }
         catch (error) {
             console.log(error);

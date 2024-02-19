@@ -15,15 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.newInstallation = void 0;
 const db_1 = __importDefault(require("../db"));
 const installation_1 = require("../models/installation");
-const newInstallation = (order_number, id, tms_order_id, res) => __awaiter(void 0, void 0, void 0, function* () {
+const newInstallation = (tms_response, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield (0, db_1.default)();
-        const installation = new installation_1.Installation({
-            order_number,
-            id,
-            tms_order_id,
-        });
-        yield installation.save();
+        installation_1.Installation.insertMany(tms_response);
         return res.status(200).json({ message: "Entry added" });
     }
     catch (error) {

@@ -47,12 +47,13 @@ export default function getInstallationDetails(
       item.title.toLowerCase().includes("smart") &&
       item.title.toLowerCase().includes("lock");
 
-    if (!isADoorLock) continue;
-
-    installationDetails.batch_data.push({
-      ...customerPersonDetails,
-      request_description: `${item.title} - installation`,
-    });
+    if (isADoorLock) {
+      installationDetails.batch_data.push({
+        ...customerPersonDetails,
+        request_description: `${item.title} - installation`,
+      });
+      continue;
+    }
 
     if (!installationRequired) {
       installationRequired = item.title
