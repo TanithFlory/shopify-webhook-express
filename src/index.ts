@@ -23,7 +23,13 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
       getInstallationDetails(line_items, customer, order_number);
 
     if (installationRequired) {
-      await callWifyApi(order_number, id, res, installationDetails);
+      const response = await callWifyApi(
+        order_number,
+        id,
+        res,
+        installationDetails
+      );
+      console.log(response);
     }
 
     if (!installationRequired) {
