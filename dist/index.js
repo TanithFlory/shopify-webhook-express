@@ -29,11 +29,10 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
         const body = JSON.parse(rawBody.toString());
         const { order_number, customer, line_items, id } = body;
         const { installationRequired, installationDetails } = (0, getInstallationDetails_1.default)(line_items, customer, order_number);
-        if (installationRequired) {
-            const response = yield (0, callWifyApi_1.callWifyApi)(order_number, id, res, installationDetails);
-            console.log(response);
-        }
         if (!installationRequired) {
+            yield (0, callWifyApi_1.callWifyApi)(order_number, id, res, installationDetails);
+        }
+        if (installationRequired) {
             return res
                 .status(201)
                 .json({ message: "Installation not required, Entry not added." });

@@ -22,17 +22,11 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
     const { installationRequired, installationDetails } =
       getInstallationDetails(line_items, customer, order_number);
 
-    if (installationRequired) {
-      const response = await callWifyApi(
-        order_number,
-        id,
-        res,
-        installationDetails
-      );
-      console.log(response);
+    if (!installationRequired) {
+      await callWifyApi(order_number, id, res, installationDetails);
     }
 
-    if (!installationRequired) {
+    if (installationRequired) {
       return res
         .status(201)
         .json({ message: "Installation not required, Entry not added." });
