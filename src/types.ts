@@ -30,6 +30,10 @@ export interface IAddress {
 }
 
 export type OrderRequest = {
+  batch_data: Batch[];
+};
+
+export type Batch = {
   cust_mobile: string;
   cust_full_name: string;
   cust_line_0: string;
