@@ -26,6 +26,7 @@ function callWifyApi(order_number, id, res, installationDetails) {
             if (!response)
                 return;
             const responseData = yield response.json();
+            console.log(responseData);
             yield (0, installationController_1.newInstallation)(responseData.data.resp, res);
         }
         catch (error) {

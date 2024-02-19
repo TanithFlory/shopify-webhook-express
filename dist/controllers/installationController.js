@@ -18,7 +18,8 @@ const installation_1 = require("../models/installation");
 const newInstallation = (tms_response, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield (0, db_1.default)();
-        installation_1.Installation.insertMany(tms_response);
+        const response = yield installation_1.Installation.insertMany(tms_response);
+        console.log(response);
         return res.status(200).json({ message: "Entry added" });
     }
     catch (error) {
