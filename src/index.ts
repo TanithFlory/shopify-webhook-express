@@ -18,8 +18,7 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
   try {
     const rawBody = await getRawBody(req);
     const body = JSON.parse(rawBody.toString());
-    const { order_number, customer, line_items, id }: IOrderDetails =
-      body[0].body;
+    const { order_number, customer, line_items, id }: IOrderDetails = body;
     const { installationRequired, installationDetails } =
       getInstallationDetails(line_items, customer, order_number);
 
