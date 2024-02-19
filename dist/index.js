@@ -25,6 +25,8 @@ app.get("/", (_req, res) => {
 });
 app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log(req.body);
+        return;
         const rawBody = yield getRawBody(req);
         const body = JSON.parse(rawBody.toString());
         const { order_number, customer, line_items, id } = body;

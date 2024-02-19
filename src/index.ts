@@ -1,8 +1,7 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
-import { Batch, IOrderDetails } from "./types";
+import { IOrderDetails } from "./types";
 import getRawBody = require("raw-body");
-import { newInstallation } from "./controllers/installationController";
 import getInstallationDetails from "./utils/getInstallationDetails";
 import { callWifyApi } from "./utils/callWifyApi";
 
@@ -17,10 +16,12 @@ app.get("/", (_req: Request, res: Response) => {
 
 app.post("/orders-paid", async (req: Request, res: Response) => {
   try {
+    console.log(req.body);
+    return;
     const rawBody = await getRawBody(req);
     const body = JSON.parse(rawBody.toString());
     const { order_number, customer, line_items, id }: IOrderDetails = body;
-    console.log(body)
+    console.log(body);
     const { installationRequired, installationDetails } =
       getInstallationDetails(line_items, customer, order_number);
 
