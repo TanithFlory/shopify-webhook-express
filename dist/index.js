@@ -23,7 +23,6 @@ app.get("/", (_req, res) => {
 });
 app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log("req.body", req.body);
         const rawBody = yield getRawBody(req);
         const body = JSON.parse(rawBody.toString());
         console.log("body", body);
