@@ -43,6 +43,15 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
         return res.status(500).json({ Message: "Error" });
     }
 }));
+app.post("/fulfillment-update", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const rawBody = yield getRawBody(req);
+        return res.send(200).json(rawBody);
+    }
+    catch (error) {
+        console.log(error);
+    }
+}));
 app.get("/ping", (_req, res) => {
     return res.send("pong 🏓");
 });

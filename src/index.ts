@@ -37,6 +37,16 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
   }
 });
 
+app.post("/fulfillment-update", async (req: Request, res: Response) => {
+  try {
+    const rawBody = await getRawBody(req);
+
+    return res.send(200).json(rawBody);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 app.get("/ping", (_req: Request, res: Response) => {
   return res.send("pong 🏓");
 });
