@@ -40,8 +40,7 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
 app.post("/fulfillment-update", async (req: Request, res: Response) => {
   try {
     const rawBody = await getRawBody(req);
-
-    return res.send(200).json(rawBody);
+    console.log(rawBody);
   } catch (error) {
     console.log(error);
   }
