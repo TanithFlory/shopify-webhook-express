@@ -10,7 +10,11 @@ export default function getInstallationDetails(
   line_items: line_items,
   customer: ICustomerDetails,
   order_number: number
-): { installationRequired: boolean; installationDetails: OrderRequest } {
+): {
+  installationRequired: boolean;
+  installationDetails: OrderRequest;
+  isASmartLock: boolean;
+} {
   const { first_name, last_name, email, default_address }: ICustomerDetails =
     customer;
 
@@ -40,11 +44,16 @@ export default function getInstallationDetails(
   };
 
   let installationRequired = false;
+  let isASmartLock = false;
 
   for (const item of line_items as any) {
     const isADoorLock =
       item.title.toLowerCase().includes("smart") &&
       item.title.toLowerCase().includes("lock");
+
+    if (!isASmartLock) {
+      isASmartLock = isADoorLock;
+    }
 
     if (isADoorLock) {
       installationDetails.batch_data.push({
@@ -55,11 +64,12 @@ export default function getInstallationDetails(
     }
 
     if (!installationRequired) {
+      console.log(item.title.toString())
       installationRequired = item.title
         .toLowerCase()
         .includes("free installation");
     }
   }
 
-  return { installationRequired, installationDetails };
+  return { installationRequired, installationDetails, isASmartLock };
 }

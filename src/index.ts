@@ -19,17 +19,17 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
     const rawBody = await getRawBody(req);
     const body = JSON.parse(rawBody.toString());
     const { order_number, customer, line_items, id }: IOrderDetails = body;
-    const { installationRequired, installationDetails } =
+    const { installationRequired, installationDetails, isASmartLock } =
       getInstallationDetails(line_items, customer, order_number);
-
-    if (installationRequired) {
-      await callWifyApi(order_number, id, res, installationDetails);
+    console.log(isASmartLock, installationRequired);
+    if (!installationRequired || !isASmartLock) {
+      return res.status(201).json({
+        message:
+          "Installation not required, (or is not a smart lock) Entry not added.",
+      });
     }
-
-    if (!installationRequired) {
-      return res
-        .status(201)
-        .json({ message: "Installation not required, Entry not added." });
+    if (installationRequired && isASmartLock) {
+      await callWifyApi(order_number, id, res, installationDetails);
     }
   } catch (error) {
     console.log(error);
