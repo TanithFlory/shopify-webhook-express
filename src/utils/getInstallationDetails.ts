@@ -64,7 +64,6 @@ export default function getInstallationDetails(
     }
 
     if (!installationRequired) {
-      console.log(item.title.toString())
       installationRequired = item.title
         .toLowerCase()
         .includes("free installation");

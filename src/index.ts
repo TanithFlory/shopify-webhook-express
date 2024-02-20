@@ -21,7 +21,6 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
     const { order_number, customer, line_items, id }: IOrderDetails = body;
     const { installationRequired, installationDetails, isASmartLock } =
       getInstallationDetails(line_items, customer, order_number);
-    console.log(isASmartLock, installationRequired);
     if (!installationRequired || !isASmartLock) {
       return res.status(201).json({
         message:

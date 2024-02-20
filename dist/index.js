@@ -29,7 +29,6 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
         const body = JSON.parse(rawBody.toString());
         const { order_number, customer, line_items, id } = body;
         const { installationRequired, installationDetails, isASmartLock } = (0, getInstallationDetails_1.default)(line_items, customer, order_number);
-        console.log(isASmartLock, installationRequired);
         if (!installationRequired || !isASmartLock) {
             return res.status(201).json({
                 message: "Installation not required, (or is not a smart lock) Entry not added.",

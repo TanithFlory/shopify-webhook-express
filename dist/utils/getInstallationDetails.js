@@ -36,7 +36,6 @@ function getInstallationDetails(line_items, customer, order_number) {
             continue;
         }
         if (!installationRequired) {
-            console.log(item.title.toString());
             installationRequired = item.title
                 .toLowerCase()
                 .includes("free installation");
