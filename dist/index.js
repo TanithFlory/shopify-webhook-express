@@ -55,6 +55,7 @@ app.post("/fulfillment-update", (req, res) => __awaiter(void 0, void 0, void 0, 
         const rawBody = yield getRawBody(req);
         const json = JSON.parse(rawBody.toString());
         const { order_id, line_items, shipment_status } = json;
+        console.log(order_id);
         // if (shipment_status !== "delivered") {
         //   return res.status(201).json({ message: "Order is not delivered yet." });
         // }
@@ -63,32 +64,40 @@ app.post("/fulfillment-update", (req, res) => __awaiter(void 0, void 0, void 0, 
         const day = today.getDate().toString().padStart(2, "0");
         const month = today.getMonth().toString().padStart(2, "0");
         const installationDetails = {
-            batch_data: [],
+            batch_data: [
+                {
+                    "79a88c7b-c64f-46c4-a277-bc80efa1c154": `5770789617839-13569900937391`,
+                    request_req_date: `${year}-${month}-${day}`,
+                },
+            ],
         };
         let installationRequired = false;
         let isASmartLock = false;
-        for (const item of line_items) {
-            const isADoorLock = item.title.toLowerCase().includes("smart") &&
-                item.title.toLowerCase().includes("lock");
-            if (!isASmartLock) {
-                isASmartLock = isADoorLock;
-            }
-            if (isADoorLock) {
-                installationDetails.batch_data.push({
-                    "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${order_id.toString()}-${item.id}`,
-                    request_req_date: `${year}-${month}-${day}`,
-                });
-                continue;
-            }
-            if (!installationRequired) {
-                installationRequired = item.title
-                    .toLowerCase()
-                    .includes("free installation");
-            }
-        }
-        if (installationRequired && isASmartLock) {
-            yield (0, callWifyApi_1.callWifyApi)(res, installationDetails);
-        }
+        // for (const item of line_items as any) {
+        //   const isADoorLock =
+        //     item.title.toLowerCase().includes("smart") &&
+        //     item.title.toLowerCase().includes("lock");
+        //   if (!isASmartLock) {
+        //     isASmartLock = isADoorLock;
+        //   }
+        //   if (isADoorLock) {
+        //     installationDetails.batch_data.push({
+        //       "79a88c7b-c64f-46c4-a277-bc80efa1c154": `5770789617839-${
+        //         item.id
+        //       }`,
+        //       request_req_date: `${year}-${month}-${day}`,
+        //     });
+        //     continue;
+        //   }
+        //   if (!installationRequired) {
+        //     installationRequired = item.title
+        //       .toLowerCase()
+        //       .includes("free installation");
+        //   }
+        // }
+        // if (installationRequired && isASmartLock) {
+        yield (0, callWifyApi_1.callWifyApi)(res, installationDetails);
+        // }
     }
     catch (error) {
         console.log(error);
