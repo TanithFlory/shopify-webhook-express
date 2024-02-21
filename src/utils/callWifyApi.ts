@@ -4,7 +4,8 @@ import { Response } from "express";
 
 export async function callWifyApi(
   res: Response,
-  installationDetails: OrderRequest
+  installationDetails: OrderRequest,
+  dontSaveDb?: boolean
 ) {
   try {
     const response = await fetch(
@@ -22,6 +23,11 @@ export async function callWifyApi(
     if (!response) return;
 
     const responseData = await response.json();
+
+    if (dontSaveDb) {
+      return res.status(200);
+    }
+
     await newInstallation(responseData.data.resp, res);
   } catch (error) {
     console.log(error);
