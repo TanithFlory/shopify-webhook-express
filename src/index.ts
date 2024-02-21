@@ -53,9 +53,16 @@ app.post("/fulfillment-update", async (req: Request, res: Response) => {
     const rawBody = await getRawBody(req);
     const json = JSON.parse(rawBody.toString());
 
-    const { order_id, line_items, shipment_status, updated_at } = json;
-    console.log(order_id);
-    // if (shipment_status !== "delivered") return;
+    const { order_id, line_items, shipment_status } = json;
+
+    // if (shipment_status !== "delivered") {
+    //   return res.status(201).json({ message: "Order is not delivered yet." });
+    // }
+
+    const today = new Date();
+    const year = today.getFullYear().toString();
+    const day = today.getDate().toString().padStart(2, "0");
+    const month = today.getMonth().toString().padStart(2, "0");
 
     const installationDetails: any = {
       batch_data: [],
@@ -78,7 +85,7 @@ app.post("/fulfillment-update", async (req: Request, res: Response) => {
           "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${order_id.toString()}-${
             item.id
           }`,
-          request_req_date: updated_at,
+          request_req_date: `${year}-${month}-${day}`,
         });
         continue;
       }
