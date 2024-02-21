@@ -62,16 +62,20 @@ app.post("/fulfillment-update", (req, res) => __awaiter(void 0, void 0, void 0, 
         const today = new Date();
         const year = today.getFullYear().toString();
         const day = today.getDate().toString().padStart(2, "0");
-        const month = today.getMonth().toString().padStart(2, "0");
+        const month = today.getMonth() + 1;
         const installationDetails = {
             batch_data: [
                 {
                     "79a88c7b-c64f-46c4-a277-bc80efa1c154": `5770789617839-13569900937391`,
-                    request_req_date: `${year}-${month}-${day}`,
+                    request_req_date: `${year}-${month
+                        .toString()
+                        .padStart(2, "0")}-${day}`,
                 },
                 {
                     "79a88c7b-c64f-46c4-a277-bc80efa1c154": `5770789617839-13569900970159`,
-                    request_req_date: `${year}-${month}-${day}`,
+                    request_req_date: `${year}-${month
+                        .toString()
+                        .padStart(2, "0")}-${day}`,
                 },
             ],
         };
