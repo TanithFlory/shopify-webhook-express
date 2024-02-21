@@ -18,7 +18,6 @@ function getInstallationDetails(line_items, customer, order_number) {
         cust_state: province,
         request_req_date: `${year}-${month}-${day}`,
         request_priority: "Normal",
-        "79a88c7b-c64f-46c4-a277-bc80efa1c154": order_number.toString(),
     };
     const installationDetails = {
         batch_data: [],
@@ -32,7 +31,7 @@ function getInstallationDetails(line_items, customer, order_number) {
             isASmartLock = isADoorLock;
         }
         if (isADoorLock) {
-            installationDetails.batch_data.push(Object.assign(Object.assign({}, customerPersonDetails), { request_description: `${item.title} - installation` }));
+            installationDetails.batch_data.push(Object.assign(Object.assign({}, customerPersonDetails), { request_description: `${item.title} - installation`, "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${order_number.toString()}-${item.id}` }));
             continue;
         }
         if (!installationRequired) {

@@ -5,6 +5,10 @@ import {
   line_items,
   Batch,
 } from "../../src/types";
+type CustomerPersonDetails = Omit<
+  Batch,
+  "request_description" | "79a88c7b-c64f-46c4-a277-bc80efa1c154"
+>;
 
 export default function getInstallationDetails(
   line_items: line_items,
@@ -25,7 +29,7 @@ export default function getInstallationDetails(
   const month = (today.getMonth() + 1).toString().padStart(2, "0");
   const day = today.getDate().toString();
 
-  const customerPersonDetails: Omit<Batch, "request_description"> = {
+  const customerPersonDetails: CustomerPersonDetails = {
     cust_full_name: `${first_name} ${last_name}`,
     cust_mobile: phone,
     cust_city: city,
@@ -36,7 +40,6 @@ export default function getInstallationDetails(
     cust_state: province,
     request_req_date: `${year}-${month}-${day}`,
     request_priority: "Normal",
-    "79a88c7b-c64f-46c4-a277-bc80efa1c154": order_number.toString(),
   };
 
   const installationDetails: OrderRequest = {
@@ -59,6 +62,9 @@ export default function getInstallationDetails(
       installationDetails.batch_data.push({
         ...customerPersonDetails,
         request_description: `${item.title} - installation`,
+        "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${order_number.toString()}-${
+          item.id
+        }`,
       });
       continue;
     }
