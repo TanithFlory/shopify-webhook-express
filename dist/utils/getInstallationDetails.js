@@ -5,13 +5,12 @@ function getInstallationDetails(line_items, customer, order_number, id) {
     const { address1, address2, city, zip, phone, province } = default_address;
     const today = new Date();
     const year = today.getFullYear().toString();
-    const day = today.getDate().toString();
+    const day = today.getDate().toString().padStart(2, "0");
     let month = today.getMonth() + 1;
     month = (month + 1) % 12;
     if (month === 0) {
-        month = 12; // Set it to December
+        month = 12;
     }
-    console.log(year, month, day);
     const customerPersonDetails = {
         cust_full_name: `${first_name} ${last_name}`,
         cust_mobile: phone,
@@ -21,7 +20,7 @@ function getInstallationDetails(line_items, customer, order_number, id) {
         cust_line_2: "",
         cust_pincode: zip,
         cust_state: province,
-        request_req_date: `${year}-0${month.toString()}-${day}`,
+        request_req_date: `${year}-${month.toString().padStart(2, "0")}-${day}`,
         request_priority: "Normal",
     };
     const installationDetails = {

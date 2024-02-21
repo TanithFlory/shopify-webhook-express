@@ -54,7 +54,9 @@ app.post("/fulfillment-update", async (req: Request, res: Response) => {
     const json = JSON.parse(rawBody.toString());
 
     const { order_id, line_items, shipment_status, updated_at } = json;
-    console.log(shipment_status);
+    console.log(order_id);
+    // if (shipment_status !== "delivered") return;
+
     const installationDetails: any = {
       batch_data: [],
     };
