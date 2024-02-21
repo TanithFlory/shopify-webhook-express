@@ -3,6 +3,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function getInstallationDetails(line_items, customer, order_number, id) {
     const { first_name, last_name, email, default_address } = customer;
     const { address1, address2, city, zip, phone, province } = default_address;
+    const today = new Date();
+    const year = today.getFullYear().toString();
+    const day = today.getDate().toString();
+    let month = today.getMonth() + 1;
+    month = (month + 1) % 12;
+    if (month === 0) {
+        month = 12; // Set it to December
+    }
+    console.log(year, month, day);
     const customerPersonDetails = {
         cust_full_name: `${first_name} ${last_name}`,
         cust_mobile: phone,
@@ -12,7 +21,7 @@ function getInstallationDetails(line_items, customer, order_number, id) {
         cust_line_2: "",
         cust_pincode: zip,
         cust_state: province,
-        request_req_date: "-",
+        request_req_date: `${year}-0${month.toString()}-${day}`,
         request_priority: "Normal",
     };
     const installationDetails = {
