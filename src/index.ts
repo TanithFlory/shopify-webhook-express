@@ -40,7 +40,7 @@ app.post("/fulfillment-update", async (req: Request, res: Response) => {
   try {
     const rawBody = await getRawBody(req);
     const json = JSON.parse(rawBody.toString());
-    console.log(json.id, json.shipment_status);
+    console.log(json.order_id, json.shipment_status);
   } catch (error) {
     console.log(error);
   }

@@ -47,7 +47,7 @@ app.post("/fulfillment-update", (req, res) => __awaiter(void 0, void 0, void 0, 
     try {
         const rawBody = yield getRawBody(req);
         const json = JSON.parse(rawBody.toString());
-        console.log(json.id, json.shipment_status);
+        console.log(json.order_id, json.shipment_status);
     }
     catch (error) {
         console.log(error);
