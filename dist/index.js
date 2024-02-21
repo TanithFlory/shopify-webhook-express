@@ -35,7 +35,7 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
         if (isAReseller) {
             return res.status(201).json({ message: "The user is a reseller." });
         }
-        const { installationRequired, installationDetails, isASmartLock } = (0, getInstallationDetails_1.default)(line_items, customer, order_number, id);
+        const { installationRequired, installationDetails, isASmartLock } = (0, getInstallationDetails_1.default)(line_items, customer, order_number);
         if (!installationRequired || !isASmartLock) {
             return res.status(201).json({
                 message: "Installation not required, (or is not a smart lock) Entry not added.",
@@ -54,7 +54,7 @@ app.post("/fulfillment-update", (req, res) => __awaiter(void 0, void 0, void 0, 
     try {
         const rawBody = yield getRawBody(req);
         const json = JSON.parse(rawBody.toString());
-        const { order_id, line_items, shipment_status } = json;
+        const { line_items, shipment_status } = json;
         if (shipment_status !== "delivered") {
             return res.status(201).json({ message: "Order is not delivered yet." });
         }
@@ -75,7 +75,7 @@ app.post("/fulfillment-update", (req, res) => __awaiter(void 0, void 0, void 0, 
             }
             if (isADoorLock) {
                 installationDetails.batch_data.push({
-                    "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${order_id.toString()}-${item.id}`,
+                    "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${item.id}`,
                     request_req_date: `${year}-${month
                         .toString()
                         .padStart(2, "0")}-${day}`,

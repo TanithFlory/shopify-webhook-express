@@ -31,7 +31,7 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
     }
 
     const { installationRequired, installationDetails, isASmartLock } =
-      getInstallationDetails(line_items, customer, order_number, id);
+      getInstallationDetails(line_items, customer, order_number);
 
     if (!installationRequired || !isASmartLock) {
       return res.status(201).json({
@@ -53,7 +53,7 @@ app.post("/fulfillment-update", async (req: Request, res: Response) => {
     const rawBody = await getRawBody(req);
     const json = JSON.parse(rawBody.toString());
 
-    const { order_id, line_items, shipment_status } = json;
+    const { line_items, shipment_status } = json;
 
     if (shipment_status !== "delivered") {
       return res.status(201).json({ message: "Order is not delivered yet." });
@@ -82,9 +82,7 @@ app.post("/fulfillment-update", async (req: Request, res: Response) => {
 
       if (isADoorLock) {
         installationDetails.batch_data.push({
-          "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${order_id.toString()}-${
-            item.id
-          }`,
+          "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${item.id}`,
           request_req_date: `${year}-${month
             .toString()
             .padStart(2, "0")}-${day}`,

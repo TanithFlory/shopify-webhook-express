@@ -13,8 +13,7 @@ type CustomerPersonDetails = Omit<
 export default function getInstallationDetails(
   line_items: line_items,
   customer: ICustomerDetails,
-  order_number: number,
-  id: number
+  order_number: number
 ): {
   installationRequired: boolean;
   installationDetails: OrderRequest;
@@ -73,7 +72,7 @@ export default function getInstallationDetails(
         request_description: `${order_number.toString()} - ${
           item.title
         } - installation`,
-        "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${id.toString()}-${item.id}`,
+        "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${item.id}`,
       });
       continue;
     }

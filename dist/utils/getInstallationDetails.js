@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function getInstallationDetails(line_items, customer, order_number, id) {
+function getInstallationDetails(line_items, customer, order_number) {
     const { first_name, last_name, email, default_address } = customer;
     const { address1, address2, city, zip, phone, province } = default_address;
     const today = new Date();
@@ -35,7 +35,7 @@ function getInstallationDetails(line_items, customer, order_number, id) {
             isASmartLock = isADoorLock;
         }
         if (isADoorLock) {
-            installationDetails.batch_data.push(Object.assign(Object.assign({}, customerPersonDetails), { request_description: `${order_number.toString()} - ${item.title} - installation`, "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${id.toString()}-${item.id}` }));
+            installationDetails.batch_data.push(Object.assign(Object.assign({}, customerPersonDetails), { request_description: `${order_number.toString()} - ${item.title} - installation`, "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${item.id}` }));
             continue;
         }
         if (!installationRequired) {
