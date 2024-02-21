@@ -71,6 +71,10 @@ app.post("/fulfillment-update", async (req: Request, res: Response) => {
           "79a88c7b-c64f-46c4-a277-bc80efa1c154": `5770789617839-13569900937391`,
           request_req_date: `${year}-${month}-${day}`,
         },
+        {
+          "79a88c7b-c64f-46c4-a277-bc80efa1c154": `5770789617839-13569900970159`,
+          request_req_date: `${year}-${month}-${day}`,
+        },
       ],
     };
 
