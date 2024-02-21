@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.callWifyApi = void 0;
 const installationController_1 = require("../controllers/installationController");
-function callWifyApi(order_number, id, res, installationDetails) {
+function callWifyApi(res, installationDetails) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const response = yield fetch("https://uat-tms.wify.co.in/v1/brands/order/315/", {

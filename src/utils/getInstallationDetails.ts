@@ -13,7 +13,8 @@ type CustomerPersonDetails = Omit<
 export default function getInstallationDetails(
   line_items: line_items,
   customer: ICustomerDetails,
-  order_number: number
+  order_number: number,
+  id: number
 ): {
   installationRequired: boolean;
   installationDetails: OrderRequest;
@@ -24,10 +25,6 @@ export default function getInstallationDetails(
 
   const { address1, address2, city, zip, phone, province }: IAddress =
     default_address;
-  const today = new Date();
-  const year = today.getFullYear().toString();
-  const month = (today.getMonth() + 1).toString().padStart(2, "0");
-  const day = today.getDate().toString();
 
   const customerPersonDetails: CustomerPersonDetails = {
     cust_full_name: `${first_name} ${last_name}`,
@@ -38,7 +35,7 @@ export default function getInstallationDetails(
     cust_line_2: "",
     cust_pincode: zip,
     cust_state: province,
-    request_req_date: `${year}-${month}-${day}`,
+    request_req_date: "-",
     request_priority: "Normal",
   };
 
@@ -61,10 +58,10 @@ export default function getInstallationDetails(
     if (isADoorLock) {
       installationDetails.batch_data.push({
         ...customerPersonDetails,
-        request_description: `${item.title} - installation`,
-        "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${order_number.toString()}-${
-          item.id
-        }`,
+        request_description: `${order_number.toString()} - ${
+          item.title
+        } - installation`,
+        "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${id.toString()}-${item.id}`,
       });
       continue;
     }

@@ -4,6 +4,7 @@ export interface IOrderDetails {
   order_number: number;
   customer: ICustomerDetails;
   line_items: line_items;
+  tags: string;
 }
 export type line_items = IProduct[];
 

@@ -1,10 +1,8 @@
 import { newInstallation } from "../controllers/installationController";
-import { Batch, OrderRequest } from "../types";
+import { OrderRequest } from "../types";
 import { Response } from "express";
 
 export async function callWifyApi(
-  order_number: number,
-  id: number,
   res: Response,
   installationDetails: OrderRequest
 ) {

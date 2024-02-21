@@ -27,15 +27,22 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
     try {
         const rawBody = yield getRawBody(req);
         const body = JSON.parse(rawBody.toString());
-        const { order_number, customer, line_items, id } = body;
-        const { installationRequired, installationDetails, isASmartLock } = (0, getInstallationDetails_1.default)(line_items, customer, order_number);
+        const { order_number, customer, line_items, id, tags } = body;
+        const isAReseller = tags
+            .split(",")
+            .map((tag) => tag.trim())
+            .includes("reseller");
+        if (isAReseller) {
+            return res.status(201).json({ message: "The user is a reseller." });
+        }
+        const { installationRequired, installationDetails, isASmartLock } = (0, getInstallationDetails_1.default)(line_items, customer, order_number, id);
         if (!installationRequired || !isASmartLock) {
             return res.status(201).json({
                 message: "Installation not required, (or is not a smart lock) Entry not added.",
             });
         }
         if (installationRequired && isASmartLock) {
-            yield (0, callWifyApi_1.callWifyApi)(order_number, id, res, installationDetails);
+            yield (0, callWifyApi_1.callWifyApi)(res, installationDetails);
         }
     }
     catch (error) {
@@ -47,7 +54,35 @@ app.post("/fulfillment-update", (req, res) => __awaiter(void 0, void 0, void 0, 
     try {
         const rawBody = yield getRawBody(req);
         const json = JSON.parse(rawBody.toString());
-        console.log(json.order_id, json.shipment_status);
+        const { order_id, line_items, shipment_status, updated_at } = json;
+        console.log(shipment_status);
+        const installationDetails = {
+            batch_data: [],
+        };
+        let installationRequired = false;
+        let isASmartLock = false;
+        for (const item of line_items) {
+            const isADoorLock = item.title.toLowerCase().includes("smart") &&
+                item.title.toLowerCase().includes("lock");
+            if (!isASmartLock) {
+                isASmartLock = isADoorLock;
+            }
+            if (isADoorLock) {
+                installationDetails.batch_data.push({
+                    "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${order_id.toString()}-${item.id}`,
+                    request_req_date: updated_at,
+                });
+                continue;
+            }
+            if (!installationRequired) {
+                installationRequired = item.title
+                    .toLowerCase()
+                    .includes("free installation");
+            }
+        }
+        if (installationRequired && isASmartLock) {
+            yield (0, callWifyApi_1.callWifyApi)(res, installationDetails);
+        }
     }
     catch (error) {
         console.log(error);
