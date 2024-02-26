@@ -14,12 +14,13 @@ app.get("/", (_req: Request, res: Response) => {
   return res.send("pong 🏓");
 });
 
-app.use(bodyParser.raw({ type: "application/json" }));
+app.use(bodyParser.raw({ type: "*/*" }));
 
 app.post("/orders-paid", async (req: Request, res: Response) => {
   try {
-    const body = JSON.parse(req.body);
-    
+    const rawBody = req.body.toString("utf-8");
+    const body = JSON.parse(rawBody);
+
     const { order_number, customer, line_items, id, tags }: IOrderDetails =
       body;
 

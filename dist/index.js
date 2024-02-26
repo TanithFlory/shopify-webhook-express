@@ -23,11 +23,12 @@ const port = process.env.PORT || 8080;
 app.get("/", (_req, res) => {
     return res.send("pong 🏓");
 });
-app.use(body_parser_1.default.raw({ type: "application/json" }));
+app.use(body_parser_1.default.raw({ type: "*/*" }));
 app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
-        const body = JSON.parse(req.body);
+        const rawBody = req.body.toString("utf-8");
+        const body = JSON.parse(rawBody);
         const { order_number, customer, line_items, id, tags } = body;
         const isAReseller = (_b = (_a = tags === null || tags === void 0 ? void 0 : tags.split(",")) === null || _a === void 0 ? void 0 : _a.map((tag) => tag === null || tag === void 0 ? void 0 : tag.trim())) === null || _b === void 0 ? void 0 : _b.includes("reseller");
         if (isAReseller) {
