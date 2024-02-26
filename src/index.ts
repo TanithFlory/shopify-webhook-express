@@ -15,16 +15,21 @@ app.get("/", (_req: Request, res: Response) => {
   return res.send("pong 🏓");
 });
 
+app.use(
+  bodyParser.json({ inflate: true, limit: "50mb", type: "application/json" })
+);
+
 app.post(
   "/orders-paid",
   express.raw({ type: "*/*" }),
   async (req: Request, res: Response) => {
     try {
       const rawBody = await getRawBody(req);
-      const json = JSON.parse(rawBody.toString());
-
+      const body = JSON.parse(rawBody.toString());
+      console.log(body);
+      return;
       const { order_number, customer, line_items, id, tags }: IOrderDetails =
-        json;
+        body;
 
       const isAReseller = tags
         ?.split(",")
@@ -56,10 +61,9 @@ app.post(
 
 app.post("/fulfillment-update", async (req: Request, res: Response) => {
   try {
-    const rawBody = await getRawBody(req);
-    const json = JSON.parse(rawBody.toString());
+    const body = JSON.parse(req.body);
 
-    const { line_items, shipment_status } = json;
+    const { line_items, shipment_status } = body;
 
     if (shipment_status !== "delivered") {
       return res.status(201).json({ message: "Order is not delivered yet." });
