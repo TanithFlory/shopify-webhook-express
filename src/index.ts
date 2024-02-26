@@ -14,17 +14,29 @@ app.get("/", (_req: Request, res: Response) => {
   return res.send("pong 🏓");
 });
 
+app.use(function (req, res, next) {
+  var data = "";
+  req.setEncoding("utf8");
+  req.on("data", function (chunk) {
+    data += chunk;
+  });
+
+  req.on("end", function () {
+    req.body = data;
+    next();
+  });
+});
+
 app.post("/orders-paid", async (req: Request, res: Response) => {
   try {
-    const rawBody = await getRawBody(req);
-    const body = JSON.parse(rawBody.toString());
+    const body = JSON.parse(req.body);
     const { order_number, customer, line_items, id, tags }: IOrderDetails =
       body;
 
     const isAReseller = tags
-      .split(",")
-      .map((tag) => tag.trim())
-      .includes("reseller");
+      ?.split(",")
+      ?.map((tag) => tag?.trim())
+      ?.includes("reseller");
 
     if (isAReseller) {
       return res.status(201).json({ message: "The user is a reseller." });

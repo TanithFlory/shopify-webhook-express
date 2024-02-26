@@ -23,15 +23,23 @@ const port = process.env.PORT || 8080;
 app.get("/", (_req, res) => {
     return res.send("pong 🏓");
 });
+app.use(function (req, res, next) {
+    var data = "";
+    req.setEncoding("utf8");
+    req.on("data", function (chunk) {
+        data += chunk;
+    });
+    req.on("end", function () {
+        req.body = data;
+        next();
+    });
+});
 app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     try {
-        const rawBody = yield getRawBody(req);
-        const body = JSON.parse(rawBody.toString());
+        const body = JSON.parse(req.body);
         const { order_number, customer, line_items, id, tags } = body;
-        const isAReseller = tags
-            .split(",")
-            .map((tag) => tag.trim())
-            .includes("reseller");
+        const isAReseller = (_b = (_a = tags === null || tags === void 0 ? void 0 : tags.split(",")) === null || _a === void 0 ? void 0 : _a.map((tag) => tag === null || tag === void 0 ? void 0 : tag.trim())) === null || _b === void 0 ? void 0 : _b.includes("reseller");
         if (isAReseller) {
             return res.status(201).json({ message: "The user is a reseller." });
         }
