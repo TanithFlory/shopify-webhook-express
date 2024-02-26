@@ -14,9 +14,32 @@ app.get("/", (_req: Request, res: Response) => {
   return res.send("pong 🏓");
 });
 
-app.use(bodyParser.json());
+var customParser = bodyParser.json({
+  type: function (req) {
+    if (req.headers["content-type"] === "") {
+      return (req.headers["content-type"] = "application/json");
+    } else if (typeof req.headers["content-type"] === "undefined") {
+      return (req.headers["content-type"] = "application/json");
+    } else {
+      return (req.headers["content-type"] = "application/json");
+    }
+  },
+});
 
-app.post("/orders-paid", async (req: Request, res: Response) => {
+app.use(
+  bodyParser.json({
+    limit: "50mb",
+  })
+); // support encoded bodies
+
+app.use(
+  bodyParser.urlencoded({
+    limit: "50mb",
+    extended: true,
+  })
+); // support encoded bodies
+
+app.post("/orders-paid", customParser, async (req: Request, res: Response) => {
   try {
     console.log(req.body);
     return;

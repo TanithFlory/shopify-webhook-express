@@ -23,8 +23,27 @@ const port = process.env.PORT || 8080;
 app.get("/", (_req, res) => {
     return res.send("pong 🏓");
 });
-app.use(body_parser_1.default.json());
-app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+var customParser = body_parser_1.default.json({
+    type: function (req) {
+        if (req.headers["content-type"] === "") {
+            return (req.headers["content-type"] = "application/json");
+        }
+        else if (typeof req.headers["content-type"] === "undefined") {
+            return (req.headers["content-type"] = "application/json");
+        }
+        else {
+            return (req.headers["content-type"] = "application/json");
+        }
+    },
+});
+app.use(body_parser_1.default.json({
+    limit: "50mb",
+})); // support encoded bodies
+app.use(body_parser_1.default.urlencoded({
+    limit: "50mb",
+    extended: true,
+})); // support encoded bodies
+app.post("/orders-paid", customParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
         console.log(req.body);
