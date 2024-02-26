@@ -24,7 +24,6 @@ export async function callWifyApi(
 
     const responseText = await response.text();
     const responseData = await JSON.parse(responseText);
-    console.log(responseData);
     if (dontSaveDb) {
       return res.status(200);
     }

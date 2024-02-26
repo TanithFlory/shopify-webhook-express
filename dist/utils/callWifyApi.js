@@ -27,7 +27,6 @@ function callWifyApi(res, installationDetails, dontSaveDb) {
                 return;
             const responseText = yield response.text();
             const responseData = yield JSON.parse(responseText);
-            console.log(responseData);
             if (dontSaveDb) {
                 return res.status(200);
             }

@@ -16,19 +16,19 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const getInstallationDetails_1 = __importDefault(require("./utils/getInstallationDetails"));
 const callWifyApi_1 = require("./utils/callWifyApi");
-const body_parser_1 = __importDefault(require("body-parser"));
+const raw_body_1 = __importDefault(require("raw-body"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 8080;
 app.get("/", (_req, res) => {
     return res.send("pong 🏓");
 });
-app.use(body_parser_1.default.json({ inflate: true, limit: "50mb", type: "application/json" }));
 app.post("/orders-paid", express_1.default.raw({ type: "*/*" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
-        const body = JSON.parse(req.body);
-        const { order_number, customer, line_items, id, tags } = body;
+        const rawBody = yield (0, raw_body_1.default)(req);
+        const json = JSON.parse(rawBody.toString());
+        const { order_number, customer, line_items, id, tags } = json;
         const isAReseller = (_b = (_a = tags === null || tags === void 0 ? void 0 : tags.split(",")) === null || _a === void 0 ? void 0 : _a.map((tag) => tag === null || tag === void 0 ? void 0 : tag.trim())) === null || _b === void 0 ? void 0 : _b.includes("reseller");
         if (isAReseller) {
             return res.status(201).json({ message: "The user is a reseller." });
@@ -50,7 +50,9 @@ app.post("/orders-paid", express_1.default.raw({ type: "*/*" }), (req, res) => _
 }));
 app.post("/fulfillment-update", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { line_items, shipment_status } = req.body;
+        const rawBody = yield (0, raw_body_1.default)(req);
+        const json = JSON.parse(rawBody.toString());
+        const { line_items, shipment_status } = json;
         if (shipment_status !== "delivered") {
             return res.status(201).json({ message: "Order is not delivered yet." });
         }
