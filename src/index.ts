@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import { IOrderDetails, OrderRequest } from "./types";
-import getRawBody = require("raw-body");
 import getInstallationDetails from "./utils/getInstallationDetails";
 import { callWifyApi } from "./utils/callWifyApi";
+import bodyParser from "body-parser";
 
 dotenv.config();
 
@@ -14,22 +14,12 @@ app.get("/", (_req: Request, res: Response) => {
   return res.send("pong 🏓");
 });
 
-app.use(function (req, res, next) {
-  var data = "";
-  req.setEncoding("utf8");
-  req.on("data", function (chunk) {
-    data += chunk;
-  });
-
-  req.on("end", function () {
-    req.body = data;
-    next();
-  });
-});
+app.use(bodyParser.raw({ type: "application/json" }));
 
 app.post("/orders-paid", async (req: Request, res: Response) => {
   try {
     const body = JSON.parse(req.body);
+    
     const { order_number, customer, line_items, id, tags }: IOrderDetails =
       body;
 
@@ -62,10 +52,9 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
 
 app.post("/fulfillment-update", async (req: Request, res: Response) => {
   try {
-    const rawBody = await getRawBody(req);
-    const json = JSON.parse(rawBody.toString());
+    const body = JSON.parse(req.body);
 
-    const { line_items, shipment_status } = json;
+    const { line_items, shipment_status } = body;
 
     if (shipment_status !== "delivered") {
       return res.status(201).json({ message: "Order is not delivered yet." });

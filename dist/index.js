@@ -14,26 +14,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const getRawBody = require("raw-body");
 const getInstallationDetails_1 = __importDefault(require("./utils/getInstallationDetails"));
 const callWifyApi_1 = require("./utils/callWifyApi");
+const body_parser_1 = __importDefault(require("body-parser"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 8080;
 app.get("/", (_req, res) => {
     return res.send("pong 🏓");
 });
-app.use(function (req, res, next) {
-    var data = "";
-    req.setEncoding("utf8");
-    req.on("data", function (chunk) {
-        data += chunk;
-    });
-    req.on("end", function () {
-        req.body = data;
-        next();
-    });
-});
+app.use(body_parser_1.default.raw({ type: "application/json" }));
 app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
@@ -60,9 +50,8 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
 }));
 app.post("/fulfillment-update", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const rawBody = yield getRawBody(req);
-        const json = JSON.parse(rawBody.toString());
-        const { line_items, shipment_status } = json;
+        const body = JSON.parse(req.body);
+        const { line_items, shipment_status } = body;
         if (shipment_status !== "delivered") {
             return res.status(201).json({ message: "Order is not delivered yet." });
         }
