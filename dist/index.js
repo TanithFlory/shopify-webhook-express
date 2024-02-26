@@ -23,30 +23,12 @@ const port = process.env.PORT || 8080;
 app.get("/", (_req, res) => {
     return res.send("pong 🏓");
 });
-var customParser = body_parser_1.default.json({
-    type: function (req) {
-        if (req.headers["content-type"] === "") {
-            return (req.headers["content-type"] = "application/json");
-        }
-        else if (typeof req.headers["content-type"] === "undefined") {
-            return (req.headers["content-type"] = "application/json");
-        }
-        else {
-            return (req.headers["content-type"] = "application/json");
-        }
-    },
-});
-app.use(body_parser_1.default.json({
-    limit: "50mb",
-})); // support encoded bodies
-app.use(body_parser_1.default.urlencoded({
-    limit: "50mb",
-    extended: true,
-})); // support encoded bodies
-app.post("/orders-paid", customParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.use(body_parser_1.default.json({ inflate: true, limit: "50mb", type: "application/json" }));
+app.post("/orders-paid", express_1.default.raw({ type: "*/*" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
-        const { order_number, customer, line_items, id, tags } = req.body;
+        const body = JSON.parse(req.body);
+        const { order_number, customer, line_items, id, tags } = body;
         const isAReseller = (_b = (_a = tags === null || tags === void 0 ? void 0 : tags.split(",")) === null || _a === void 0 ? void 0 : _a.map((tag) => tag === null || tag === void 0 ? void 0 : tag.trim())) === null || _b === void 0 ? void 0 : _b.includes("reseller");
         if (isAReseller) {
             return res.status(201).json({ message: "The user is a reseller." });
@@ -66,7 +48,7 @@ app.post("/orders-paid", customParser, (req, res) => __awaiter(void 0, void 0, v
         return res.status(500).json({ Message: "Error" });
     }
 }));
-app.post("/fulfillment-update", customParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post("/fulfillment-update", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { line_items, shipment_status } = req.body;
         if (shipment_status !== "delivered") {

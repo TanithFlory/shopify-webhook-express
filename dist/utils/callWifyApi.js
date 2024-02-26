@@ -14,7 +14,7 @@ const installationController_1 = require("../controllers/installationController"
 function callWifyApi(res, installationDetails, dontSaveDb) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const response = yield fetch("https://uat-tms.wify.co.in/v1/brands/order/315/", {
+            const response = yield fetch("https://api-tms.wify.co.in/v1/brands/order/1109/", {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
@@ -25,7 +25,9 @@ function callWifyApi(res, installationDetails, dontSaveDb) {
             });
             if (!response)
                 return;
-            const responseData = yield response.json();
+            const responseText = yield response.text();
+            const responseData = yield JSON.parse(responseText);
+            console.log(responseData);
             if (dontSaveDb) {
                 return res.status(200);
             }

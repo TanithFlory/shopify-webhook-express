@@ -9,7 +9,7 @@ export async function callWifyApi(
 ) {
   try {
     const response = await fetch(
-      "https://uat-tms.wify.co.in/v1/brands/order/315/",
+      "https://api-tms.wify.co.in/v1/brands/order/1109/",
       {
         method: "POST",
         headers: {
@@ -22,8 +22,9 @@ export async function callWifyApi(
     );
     if (!response) return;
 
-    const responseData = await response.json();
-
+    const responseText = await response.text();
+    const responseData = await JSON.parse(responseText);
+    console.log(responseData);
     if (dontSaveDb) {
       return res.status(200);
     }

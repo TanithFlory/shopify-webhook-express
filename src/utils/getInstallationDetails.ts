@@ -39,7 +39,7 @@ export default function getInstallationDetails(
 
   const customerPersonDetails: CustomerPersonDetails = {
     cust_full_name: `${first_name} ${last_name}`,
-    cust_mobile: phone,
+    cust_mobile: phone.replace(/-/g, ""),
     cust_city: city,
     cust_line_0: address1,
     cust_line_1: address2 || "",
