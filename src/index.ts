@@ -19,8 +19,6 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
   try {
     const rawBody = await getRawBody(req);
     const body = JSON.parse(rawBody.toString());
-    console.log(body);
-    return;
     const { order_number, customer, line_items, id, tags }: IOrderDetails =
       body;
 
@@ -53,7 +51,8 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
 
 app.post("/fulfillment-update", async (req: Request, res: Response) => {
   try {
-    const body = JSON.parse(req.body);
+    const rawBody = await getRawBody(req);
+    const body = JSON.parse(rawBody.toString());
 
     const { line_items, shipment_status } = body;
 

@@ -28,8 +28,6 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
     try {
         const rawBody = yield (0, raw_body_1.default)(req);
         const body = JSON.parse(rawBody.toString());
-        console.log(body);
-        return;
         const { order_number, customer, line_items, id, tags } = body;
         const isAReseller = (_b = (_a = tags === null || tags === void 0 ? void 0 : tags.split(",")) === null || _a === void 0 ? void 0 : _a.map((tag) => tag === null || tag === void 0 ? void 0 : tag.trim())) === null || _b === void 0 ? void 0 : _b.includes("reseller");
         if (isAReseller) {
@@ -52,7 +50,8 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
 }));
 app.post("/fulfillment-update", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const body = JSON.parse(req.body);
+        const rawBody = yield (0, raw_body_1.default)(req);
+        const body = JSON.parse(rawBody.toString());
         const { line_items, shipment_status } = body;
         if (shipment_status !== "delivered") {
             return res.status(201).json({ message: "Order is not delivered yet." });
