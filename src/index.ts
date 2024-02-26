@@ -15,49 +15,41 @@ app.get("/", (_req: Request, res: Response) => {
   return res.send("pong 🏓");
 });
 
-app.use(
-  bodyParser.json({ inflate: true, limit: "50mb", type: "application/json" })
-);
+app.post("/orders-paid", async (req: Request, res: Response) => {
+  try {
+    const rawBody = await getRawBody(req);
+    const body = JSON.parse(rawBody.toString());
+    console.log(body);
+    return;
+    const { order_number, customer, line_items, id, tags }: IOrderDetails =
+      body;
 
-app.post(
-  "/orders-paid",
-  express.raw({ type: "*/*" }),
-  async (req: Request, res: Response) => {
-    try {
-      const rawBody = await getRawBody(req);
-      const body = JSON.parse(rawBody.toString());
-      console.log(body);
-      return;
-      const { order_number, customer, line_items, id, tags }: IOrderDetails =
-        body;
+    const isAReseller = tags
+      ?.split(",")
+      ?.map((tag) => tag?.trim())
+      ?.includes("reseller");
 
-      const isAReseller = tags
-        ?.split(",")
-        ?.map((tag) => tag?.trim())
-        ?.includes("reseller");
-
-      if (isAReseller) {
-        return res.status(201).json({ message: "The user is a reseller." });
-      }
-
-      const { installationRequired, installationDetails, isASmartLock } =
-        getInstallationDetails(line_items, customer, order_number);
-
-      if (!installationRequired || !isASmartLock) {
-        return res.status(201).json({
-          message:
-            "Installation not required, (or is not a smart lock) Entry not added.",
-        });
-      }
-      if (installationRequired && isASmartLock) {
-        await callWifyApi(res, installationDetails);
-      }
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({ Message: "Error" });
+    if (isAReseller) {
+      return res.status(201).json({ message: "The user is a reseller." });
     }
+
+    const { installationRequired, installationDetails, isASmartLock } =
+      getInstallationDetails(line_items, customer, order_number);
+
+    if (!installationRequired || !isASmartLock) {
+      return res.status(201).json({
+        message:
+          "Installation not required, (or is not a smart lock) Entry not added.",
+      });
+    }
+    if (installationRequired && isASmartLock) {
+      await callWifyApi(res, installationDetails);
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ Message: "Error" });
   }
-);
+});
 
 app.post("/fulfillment-update", async (req: Request, res: Response) => {
   try {

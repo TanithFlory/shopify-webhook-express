@@ -16,7 +16,6 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const getInstallationDetails_1 = __importDefault(require("./utils/getInstallationDetails"));
 const callWifyApi_1 = require("./utils/callWifyApi");
-const body_parser_1 = __importDefault(require("body-parser"));
 const raw_body_1 = __importDefault(require("raw-body"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -24,8 +23,7 @@ const port = process.env.PORT || 8080;
 app.get("/", (_req, res) => {
     return res.send("pong 🏓");
 });
-app.use(body_parser_1.default.json({ inflate: true, limit: "50mb", type: "application/json" }));
-app.post("/orders-paid", express_1.default.raw({ type: "*/*" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
         const rawBody = yield (0, raw_body_1.default)(req);
