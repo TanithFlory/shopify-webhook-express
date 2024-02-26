@@ -27,8 +27,9 @@ app.use(body_parser_1.default.json());
 app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
-        const body = JSON.parse(req.body);
-        const { order_number, customer, line_items, id, tags } = body;
+        console.log(req.body);
+        return;
+        const { order_number, customer, line_items, id, tags } = req.body;
         const isAReseller = (_b = (_a = tags === null || tags === void 0 ? void 0 : tags.split(",")) === null || _a === void 0 ? void 0 : _a.map((tag) => tag === null || tag === void 0 ? void 0 : tag.trim())) === null || _b === void 0 ? void 0 : _b.includes("reseller");
         if (isAReseller) {
             return res.status(201).json({ message: "The user is a reseller." });

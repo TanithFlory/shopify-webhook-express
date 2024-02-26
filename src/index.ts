@@ -18,10 +18,10 @@ app.use(bodyParser.json());
 
 app.post("/orders-paid", async (req: Request, res: Response) => {
   try {
-    const body = JSON.parse(req.body);
-
+    console.log(req.body);
+    return;
     const { order_number, customer, line_items, id, tags }: IOrderDetails =
-      body;
+      req.body;
 
     const isAReseller = tags
       ?.split(",")
