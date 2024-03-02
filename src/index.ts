@@ -60,10 +60,13 @@ app.post("/fulfillment-update", async (req: Request, res: Response) => {
       return res.status(201).json({ message: "Order is not delivered yet." });
     }
 
-    const today = new Date();
-    const year = today.getFullYear().toString();
-    const day = today.getDate().toString().padStart(2, "0");
-    const month = today.getMonth() + 1;
+    const today = new Date("2019-03-31");
+    const nextDay = new Date(today);
+    nextDay.setDate(today.getDate() + 1);
+
+    const year = nextDay.getFullYear().toString();
+    const day = nextDay.getDate().toString().padStart(2, "0");
+    const month = nextDay.getMonth() + 1;
 
     const installationDetails: any = {
       batch_data: [],
@@ -84,9 +87,9 @@ app.post("/fulfillment-update", async (req: Request, res: Response) => {
       if (isADoorLock) {
         installationDetails.batch_data.push({
           "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${item.id}`,
-          request_req_date: `${year}-${month
+          request_req_date: `${year}/${month
             .toString()
-            .padStart(2, "0")}-${day}`,
+            .padStart(2, "0")}/${day}`,
         });
         continue;
       }
