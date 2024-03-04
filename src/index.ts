@@ -60,7 +60,7 @@ app.post("/fulfillment-update", async (req: Request, res: Response) => {
       return res.status(201).json({ message: "Order is not delivered yet." });
     }
 
-    const today = new Date("2019-03-31");
+    const today = new Date();
     const nextDay = new Date(today);
     nextDay.setDate(today.getDate() + 1);
 
