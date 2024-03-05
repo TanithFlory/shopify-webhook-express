@@ -28,12 +28,12 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
     try {
         const rawBody = yield (0, raw_body_1.default)(req);
         const body = JSON.parse(rawBody.toString());
-        const { order_number, customer, line_items, id, tags } = body;
+        const { order_number, shipping_address, line_items, id, tags } = body;
         const isAReseller = (_b = (_a = tags === null || tags === void 0 ? void 0 : tags.split(",")) === null || _a === void 0 ? void 0 : _a.map((tag) => tag === null || tag === void 0 ? void 0 : tag.trim())) === null || _b === void 0 ? void 0 : _b.includes("reseller");
         if (isAReseller) {
             return res.status(201).json({ message: "The user is a reseller." });
         }
-        const { installationRequired, installationDetails, isASmartLock } = (0, getInstallationDetails_1.default)(line_items, customer, order_number);
+        const { installationRequired, installationDetails, isASmartLock } = (0, getInstallationDetails_1.default)(line_items, shipping_address, order_number);
         if (!installationRequired || !isASmartLock) {
             return res.status(201).json({
                 message: "Installation not required, (or is not a smart lock) Entry not added.",

@@ -12,18 +12,23 @@ type CustomerPersonDetails = Omit<
 
 export default function getInstallationDetails(
   line_items: line_items,
-  customer: ICustomerDetails,
+  shipping_address: IAddress,
   order_number: number
 ): {
   installationRequired: boolean;
   installationDetails: OrderRequest;
   isASmartLock: boolean;
 } {
-  const { first_name, last_name, email, default_address }: ICustomerDetails =
-    customer;
-
-  const { address1, address2, city, zip, phone, province }: IAddress =
-    default_address;
+  const {
+    first_name,
+    last_name,
+    address1,
+    address2,
+    city,
+    zip,
+    phone,
+    province,
+  }: IAddress = shipping_address;
 
   const today = new Date();
   const year = today.getFullYear().toString();
@@ -39,7 +44,10 @@ export default function getInstallationDetails(
 
   const customerPersonDetails: CustomerPersonDetails = {
     cust_full_name: `${first_name} ${last_name}`,
-    cust_mobile: phone.replace(/-/g, ""),
+    cust_mobile: phone
+      .replace(/[-\s]/g, "")
+      .replace(/^(\+91)/, "")
+      .trim(),
     cust_city: city,
     cust_line_0: address1,
     cust_line_1: address2 || "",

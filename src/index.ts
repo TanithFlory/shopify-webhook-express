@@ -19,7 +19,7 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
   try {
     const rawBody = await getRawBody(req);
     const body = JSON.parse(rawBody.toString());
-    const { order_number, customer, line_items, id, tags }: IOrderDetails =
+    const { order_number, shipping_address, line_items, id, tags }: IOrderDetails =
       body;
 
     const isAReseller = tags
@@ -32,7 +32,7 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
     }
 
     const { installationRequired, installationDetails, isASmartLock } =
-      getInstallationDetails(line_items, customer, order_number);
+      getInstallationDetails(line_items, shipping_address, order_number);
 
     if (!installationRequired || !isASmartLock) {
       return res.status(201).json({

@@ -5,6 +5,7 @@ export interface IOrderDetails {
   customer: ICustomerDetails;
   line_items: line_items;
   tags: string;
+  shipping_address: IAddress;
 }
 export type line_items = IProduct[];
 
@@ -22,6 +23,8 @@ export interface ICustomerDetails {
 }
 
 export interface IAddress {
+  first_name: string;
+  last_name: string;
   address1: string;
   address2?: string;
   city: string;

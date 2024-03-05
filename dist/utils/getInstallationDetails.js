@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function getInstallationDetails(line_items, customer, order_number) {
-    const { first_name, last_name, email, default_address } = customer;
-    const { address1, address2, city, zip, phone, province } = default_address;
+function getInstallationDetails(line_items, shipping_address, order_number) {
+    const { first_name, last_name, address1, address2, city, zip, phone, province, } = shipping_address;
     const today = new Date();
     const year = today.getFullYear().toString();
     const day = today.getDate().toString().padStart(2, "0");
@@ -13,7 +12,10 @@ function getInstallationDetails(line_items, customer, order_number) {
     }
     const customerPersonDetails = {
         cust_full_name: `${first_name} ${last_name}`,
-        cust_mobile: phone.replace(/-/g, ""),
+        cust_mobile: phone
+            .replace(/[-\s]/g, "")
+            .replace(/^(\+91)/, "")
+            .trim(),
         cust_city: city,
         cust_line_0: address1,
         cust_line_1: address2 || "",
