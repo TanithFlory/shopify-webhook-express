@@ -17,9 +17,9 @@ function getInstallationDetails(line_items, shipping_address, order_number) {
             .replace(/^(\+91)/, "")
             .trim(),
         cust_city: city,
-        cust_line_0: address1,
-        cust_line_1: address2 || "",
-        cust_line_2: "",
+        cust_line_0: "",
+        cust_line_1: address1,
+        cust_line_2: address2,
         cust_pincode: zip,
         cust_state: province,
         request_req_date: `${year}-${month.toString().padStart(2, "0")}-${day}`,
