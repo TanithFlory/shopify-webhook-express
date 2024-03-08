@@ -19,8 +19,13 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
   try {
     const rawBody = await getRawBody(req);
     const body = JSON.parse(rawBody.toString());
-    const { order_number, shipping_address, line_items, id, tags }: IOrderDetails =
-      body;
+    const {
+      order_number,
+      shipping_address,
+      line_items,
+      id,
+      tags,
+    }: IOrderDetails = body;
 
     const isAReseller = tags
       ?.split(",")
@@ -86,7 +91,7 @@ app.post("/fulfillment-update", async (req: Request, res: Response) => {
 
       if (isADoorLock) {
         installationDetails.batch_data.push({
-          "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${item.id}`,
+          "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${item.order_id}`,
           request_req_date: `${year}/${month
             .toString()
             .padStart(2, "0")}/${day}`,

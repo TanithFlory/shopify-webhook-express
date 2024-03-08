@@ -28,7 +28,7 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
     try {
         const rawBody = yield (0, raw_body_1.default)(req);
         const body = JSON.parse(rawBody.toString());
-        const { order_number, shipping_address, line_items, id, tags } = body;
+        const { order_number, shipping_address, line_items, id, tags, } = body;
         const isAReseller = (_b = (_a = tags === null || tags === void 0 ? void 0 : tags.split(",")) === null || _a === void 0 ? void 0 : _a.map((tag) => tag === null || tag === void 0 ? void 0 : tag.trim())) === null || _b === void 0 ? void 0 : _b.includes("reseller");
         if (isAReseller) {
             return res.status(201).json({ message: "The user is a reseller." });
@@ -75,7 +75,7 @@ app.post("/fulfillment-update", (req, res) => __awaiter(void 0, void 0, void 0, 
             }
             if (isADoorLock) {
                 installationDetails.batch_data.push({
-                    "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${item.id}`,
+                    "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${item.order_id}`,
                     request_req_date: `${year}/${month
                         .toString()
                         .padStart(2, "0")}/${day}`,
