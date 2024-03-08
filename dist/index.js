@@ -17,6 +17,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const getInstallationDetails_1 = __importDefault(require("./utils/getInstallationDetails"));
 const callWifyApi_1 = require("./utils/callWifyApi");
 const raw_body_1 = __importDefault(require("raw-body"));
+const installationController_1 = require("./controllers/installationController");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 8080;
@@ -75,7 +76,7 @@ app.post("/fulfillment-update", (req, res) => __awaiter(void 0, void 0, void 0, 
             }
             if (isADoorLock) {
                 installationDetails.batch_data.push({
-                    "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${item.order_id}`,
+                    "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${item.id}`,
                     request_req_date: `${year}/${month
                         .toString()
                         .padStart(2, "0")}/${day}`,
@@ -88,6 +89,7 @@ app.post("/fulfillment-update", (req, res) => __awaiter(void 0, void 0, void 0, 
                     .includes("free installation");
             }
         }
+        yield (0, installationController_1.newInstallation)(installationDetails, res);
         if (installationRequired && isASmartLock) {
             yield (0, callWifyApi_1.callWifyApi)(res, installationDetails);
         }

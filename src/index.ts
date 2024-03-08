@@ -5,6 +5,7 @@ import getInstallationDetails from "./utils/getInstallationDetails";
 import { callWifyApi } from "./utils/callWifyApi";
 import bodyParser from "body-parser";
 import getRawBody from "raw-body";
+import { newInstallation } from "./controllers/installationController";
 
 dotenv.config();
 
@@ -91,7 +92,7 @@ app.post("/fulfillment-update", async (req: Request, res: Response) => {
 
       if (isADoorLock) {
         installationDetails.batch_data.push({
-          "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${item.order_id}`,
+          "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${item.id}`,
           request_req_date: `${year}/${month
             .toString()
             .padStart(2, "0")}/${day}`,
@@ -105,7 +106,8 @@ app.post("/fulfillment-update", async (req: Request, res: Response) => {
           .includes("free installation");
       }
     }
-
+    await newInstallation(installationDetails, res);
+    
     if (installationRequired && isASmartLock) {
       await callWifyApi(res, installationDetails);
     }
