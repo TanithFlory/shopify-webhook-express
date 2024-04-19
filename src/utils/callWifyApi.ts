@@ -26,8 +26,8 @@ export async function callWifyApi(
     if (!responseText) return;
 
     const responseData = await JSON.parse(responseText);
-  
     await newInstallation(responseData.data.resp, res);
+    
   } catch (error) {
     console.log(error);
   }

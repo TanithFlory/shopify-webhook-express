@@ -49,6 +49,8 @@ export type Batch = {
   "79a88c7b-c64f-46c4-a277-bc80efa1c154": string;
   request_description: string;
   request_req_date: string;
+  // start_time: string;
+  // end_time: string;
   request_priority: "Normal";
 };
 
