@@ -40,6 +40,7 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
     const { installationRequired, installationDetails, isASmartLock } =
       getInstallationDetails(line_items, shipping_address, order_number);
 
+      console.log(installationDetails)
     if (!installationRequired || !isASmartLock) {
       return res.status(201).json({
         message:
@@ -106,8 +107,6 @@ app.post("/fulfillment-update", async (req: Request, res: Response) => {
           .includes("free installation");
       }
     }
-    await newInstallation(installationDetails, res);
-    
     if (installationRequired && isASmartLock) {
       await callWifyApi(res, installationDetails);
     }
