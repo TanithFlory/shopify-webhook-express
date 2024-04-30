@@ -17,6 +17,8 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const getInstallationDetails_1 = __importDefault(require("./utils/getInstallationDetails"));
 const callWifyApi_1 = require("./utils/callWifyApi");
 const raw_body_1 = __importDefault(require("raw-body"));
+const db_1 = __importDefault(require("./db"));
+const installation_1 = require("./models/installation");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 8080;
@@ -24,17 +26,24 @@ app.get("/", (_req, res) => {
     return res.send("pong 🏓");
 });
 app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+    var _a, _b, _c, _d;
     try {
         const rawBody = yield (0, raw_body_1.default)(req);
         const body = JSON.parse(rawBody.toString());
         const { order_number, shipping_address, line_items, id, tags, } = body;
-        const isAReseller = (_b = (_a = tags === null || tags === void 0 ? void 0 : tags.split(",")) === null || _a === void 0 ? void 0 : _a.map((tag) => tag === null || tag === void 0 ? void 0 : tag.trim())) === null || _b === void 0 ? void 0 : _b.includes("reseller");
-        if (isAReseller) {
+        let requiresInstallation = true;
+        const isReseller = (_b = (_a = tags === null || tags === void 0 ? void 0 : tags.split(",")) === null || _a === void 0 ? void 0 : _a.map((tag) => tag === null || tag === void 0 ? void 0 : tag.trim())) === null || _b === void 0 ? void 0 : _b.includes("reseller");
+        const isSpecific = (_d = (_c = tags === null || tags === void 0 ? void 0 : tags.split(",")) === null || _c === void 0 ? void 0 : _c.map((tag) => tag === null || tag === void 0 ? void 0 : tag.trim())) === null || _d === void 0 ? void 0 : _d.includes("doorlockopt");
+        if (isReseller) {
+            requiresInstallation = false;
+        }
+        if (isSpecific) {
+            requiresInstallation = true;
+        }
+        if (!requiresInstallation) {
             return res.status(201).json({ message: "The user is a reseller." });
         }
         const { installationRequired, installationDetails, isASmartLock } = (0, getInstallationDetails_1.default)(line_items, shipping_address, order_number);
-        console.log(installationDetails);
         if (!installationRequired || !isASmartLock) {
             return res.status(201).json({
                 message: "Installation not required, (or is not a smart lock) Entry not added.",
@@ -57,6 +66,7 @@ app.post("/fulfillment-update", (req, res) => __awaiter(void 0, void 0, void 0, 
         if (shipment_status !== "delivered") {
             return res.status(201).json({ message: "Order is not delivered yet." });
         }
+        yield (0, db_1.default)();
         const today = new Date();
         const nextDay = new Date(today);
         nextDay.setDate(today.getDate() + 1);
@@ -75,11 +85,14 @@ app.post("/fulfillment-update", (req, res) => __awaiter(void 0, void 0, void 0, 
                 isASmartLock = isADoorLock;
             }
             if (isADoorLock) {
+                const response = yield installation_1.Installation.findOne({
+                    "79a88c7b-c64f-46c4-a277-bc80efa1c154": item.id,
+                });
                 installationDetails.batch_data.push({
                     "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${item.id}`,
-                    request_req_date: `${year}/${month
+                    request_req_date: `${year}-${month
                         .toString()
-                        .padStart(2, "0")}/${day}`,
+                        .padStart(2, "0")}-${day}`,
                 });
                 continue;
             }

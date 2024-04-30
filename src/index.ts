@@ -6,6 +6,8 @@ import { callWifyApi } from "./utils/callWifyApi";
 import bodyParser from "body-parser";
 import getRawBody from "raw-body";
 import { newInstallation } from "./controllers/installationController";
+import mongoConnection from "./db";
+import { Installation } from "./models/installation";
 
 dotenv.config();
 
@@ -28,19 +30,33 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
       tags,
     }: IOrderDetails = body;
 
-    const isAReseller = tags
+    let requiresInstallation = true;
+
+    const isReseller = tags
       ?.split(",")
       ?.map((tag) => tag?.trim())
       ?.includes("reseller");
 
-    if (isAReseller) {
+    const isSpecific = tags
+      ?.split(",")
+      ?.map((tag) => tag?.trim())
+      ?.includes("doorlockopt");
+
+    if (isReseller) {
+      requiresInstallation = false;
+    }
+
+    if (isSpecific) {
+      requiresInstallation = true;
+    }
+
+    if (!requiresInstallation) {
       return res.status(201).json({ message: "The user is a reseller." });
     }
 
     const { installationRequired, installationDetails, isASmartLock } =
       getInstallationDetails(line_items, shipping_address, order_number);
 
-      console.log(installationDetails)
     if (!installationRequired || !isASmartLock) {
       return res.status(201).json({
         message:
@@ -66,6 +82,7 @@ app.post("/fulfillment-update", async (req: Request, res: Response) => {
     if (shipment_status !== "delivered") {
       return res.status(201).json({ message: "Order is not delivered yet." });
     }
+    await mongoConnection();
 
     const today = new Date();
     const nextDay = new Date(today);
@@ -92,11 +109,14 @@ app.post("/fulfillment-update", async (req: Request, res: Response) => {
       }
 
       if (isADoorLock) {
+        const response = await Installation.findOne({
+          "79a88c7b-c64f-46c4-a277-bc80efa1c154": item.id,
+        });
         installationDetails.batch_data.push({
           "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${item.id}`,
-          request_req_date: `${year}/${month
+          request_req_date: `${year}-${month
             .toString()
-            .padStart(2, "0")}/${day}`,
+            .padStart(2, "0")}-${day}`,
         });
         continue;
       }
