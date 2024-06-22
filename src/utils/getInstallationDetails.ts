@@ -66,31 +66,40 @@ export default function getInstallationDetails(
   let isASmartLock = false;
 
   for (const item of line_items as any) {
+    let title = item.title;
     const isADoorLock =
-      item.title.toLowerCase().includes("smart") &&
-      item.title.toLowerCase().includes("lock");
+      title.toLowerCase().includes("smart") &&
+      title.toLowerCase().includes("lock");
 
     if (!isASmartLock) {
       isASmartLock = isADoorLock;
     }
 
+    if (Object.prototype.hasOwnProperty.call(bundles, title)) {
+      title = bundles[title];
+    }
+
     if (isADoorLock) {
       installationDetails.batch_data.push({
         ...customerPersonDetails,
-        request_description: `${order_number.toString()} - ${
-          item.title
-        } - installation`,
+        request_description: `${order_number.toString()} - ${title} - installation`,
         "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${item.id}`,
       });
       continue;
     }
 
     if (!installationRequired) {
-      installationRequired = item.title
-        .toLowerCase()
-        .includes("free installation");
+      installationRequired = title.toLowerCase().includes("free installation");
     }
   }
 
   return { installationRequired, installationDetails, isASmartLock };
 }
+
+const bundles = Object.create({
+  "Traditional Door Security Bundle": "Aqara Smart Door Lock A100 Zigbee",
+  "Advanced Door Security Bundle": "Aqara Smart Door Lock D100 Zigbee",
+  "Ultimate Door Security Package": "Aqara Smart Lock D200i",
+  "Affordable Door Security Bundle":
+    "Aqara Smart Lock U100 (Kit includes Aqara E1 Hub)",
+});
