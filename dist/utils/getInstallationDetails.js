@@ -37,7 +37,7 @@ function getInstallationDetails(line_items, shipping_address, order_number) {
         if (!isASmartLock) {
             isASmartLock = isADoorLock;
         }
-        if (Object.prototype.hasOwnProperty.call(bundles, title)) {
+        if (bundles.hasOwnProperty(title)) {
             title = bundles[title];
         }
         if (isADoorLock) {
@@ -51,10 +51,10 @@ function getInstallationDetails(line_items, shipping_address, order_number) {
     return { installationRequired, installationDetails, isASmartLock };
 }
 exports.default = getInstallationDetails;
-const bundles = Object.create({
-    "Traditional Door Security Bundle": "Aqara Smart Door Lock A100 Zigbee",
-    "Advanced Door Security Bundle": "Aqara Smart Door Lock D100 Zigbee",
-    "Ultimate Door Security Package": "Aqara Smart Lock D200i",
-    "Affordable Door Security Bundle": "Aqara Smart Lock U100 (Kit includes Aqara E1 Hub)",
-});
+const bundles = {
+    "Traditional Smart Lock Security Bundle": "Aqara Smart Door Lock A100 Zigbee",
+    "Advanced Smart Lock Security Bundle": "Aqara Smart Door Lock D100 Zigbee",
+    "Ultimate Smart Lock Security Package": "Aqara Smart Lock D200i",
+    "Affordable Smart Lock Security Bundle": "Aqara Smart Lock U100 (Kit includes Aqara E1 Hub)",
+};
 //# sourceMappingURL=getInstallationDetails.js.map
