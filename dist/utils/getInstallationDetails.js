@@ -12,10 +12,7 @@ function getInstallationDetails(line_items, shipping_address, order_number) {
     }
     const customerPersonDetails = {
         cust_full_name: `${first_name} ${last_name}`,
-        cust_mobile: phone
-            .replace(/[-\s]/g, "")
-            .replace(/^(\+91)/, "")
-            .trim(),
+        cust_mobile: revalidatePhone(phone),
         cust_city: city,
         cust_line_0: "",
         cust_line_1: address1,
@@ -56,5 +53,15 @@ const bundles = {
     "Advanced Smart Lock Security Bundle": "Aqara Smart Door Lock D100 Zigbee",
     "Ultimate Smart Lock Security Package": "Aqara Smart Lock D200i",
     "Affordable Smart Lock Security Bundle": "Aqara Smart Lock U100 (Kit includes Aqara E1 Hub)",
+};
+const revalidatePhone = (phone) => {
+    let validatedPhone = phone;
+    if (phone[0] === "0") {
+        validatedPhone = validatedPhone.slice(1);
+    }
+    return validatedPhone
+        .replace(/[-\s]/g, "")
+        .replace(/^(\+91)/, "")
+        .trim();
 };
 //# sourceMappingURL=getInstallationDetails.js.map
