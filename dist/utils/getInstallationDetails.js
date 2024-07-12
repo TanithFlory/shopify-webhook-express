@@ -25,35 +25,20 @@ function getInstallationDetails(line_items, shipping_address, order_number) {
     const installationDetails = {
         batch_data: [],
     };
-    let installationRequired = false;
-    let isASmartLock = false;
-    for (const item of line_items) {
-        let title = item.title;
-        const isADoorLock = title.toLowerCase().includes("smart") &&
+    // Define two variables. If the second object doesn't have a 'doorlock' property,
+    // the previous variable 'isSmartLock' will be overwritten.
+    let hasDoorLock = false;
+    for (const { title, id } of line_items) {
+        const isSmartLock = title.toLowerCase().includes("smart") &&
             title.toLowerCase().includes("lock");
-        if (!isASmartLock) {
-            isASmartLock = isADoorLock;
-        }
-        if (bundles.hasOwnProperty(title)) {
-            title = bundles[title];
-        }
-        if (isADoorLock) {
-            installationDetails.batch_data.push(Object.assign(Object.assign({}, customerPersonDetails), { request_description: `${order_number.toString()} - ${title} - installation`, "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${item.id}` }));
+        if (!isSmartLock)
             continue;
-        }
-        if (!installationRequired) {
-            installationRequired = title.toLowerCase().includes("free installation");
-        }
+        hasDoorLock = true;
+        installationDetails.batch_data.push(Object.assign(Object.assign({}, customerPersonDetails), { request_description: `${order_number.toString()} - ${title} - installation`, "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${id}` }));
     }
-    return { installationRequired, installationDetails, isASmartLock };
+    return { installationDetails, hasDoorLock };
 }
 exports.default = getInstallationDetails;
-const bundles = {
-    "Traditional Smart Lock Security Bundle": "Aqara Smart Door Lock A100 Zigbee",
-    "Advanced Smart Lock Security Bundle": "Aqara Smart Door Lock D100 Zigbee",
-    "Ultimate Smart Lock Security Package": "Aqara Smart Lock D200i",
-    "Affordable Smart Lock Security Bundle": "Aqara Smart Lock U100 (Kit includes Aqara E1 Hub)",
-};
 const revalidatePhone = (phone) => {
     let validatedPhone = phone;
     if (phone[0] === "0") {

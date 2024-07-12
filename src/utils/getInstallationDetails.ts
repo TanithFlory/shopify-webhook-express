@@ -1,10 +1,4 @@
-import {
-  ICustomerDetails,
-  IAddress,
-  OrderRequest,
-  line_items,
-  Batch,
-} from "../../src/types";
+import { IAddress, OrderRequest, line_items, Batch } from "../../src/types";
 type CustomerPersonDetails = Omit<
   Batch,
   "request_description" | "79a88c7b-c64f-46c4-a277-bc80efa1c154"
@@ -15,9 +9,8 @@ export default function getInstallationDetails(
   shipping_address: IAddress,
   order_number: number
 ): {
-  installationRequired: boolean;
   installationDetails: OrderRequest;
-  isASmartLock: boolean;
+  hasDoorLock: boolean;
 } {
   const {
     first_name,
@@ -59,47 +52,27 @@ export default function getInstallationDetails(
     batch_data: [],
   };
 
-  let installationRequired = false;
-  let isASmartLock = false;
+  // Define two variables. If the second object doesn't have a 'doorlock' property,
+  // the previous variable 'isSmartLock' will be overwritten.
+  let hasDoorLock = false;
 
-  for (const item of line_items as any) {
-    let title = item.title;
-    const isADoorLock =
+  for (const { title, id } of line_items as any) {
+    const isSmartLock =
       title.toLowerCase().includes("smart") &&
       title.toLowerCase().includes("lock");
 
-    if (!isASmartLock) {
-      isASmartLock = isADoorLock;
-    }
+    if (!isSmartLock) continue;
 
-    if (bundles.hasOwnProperty(title)) {
-      title = (bundles as any)[title];
-    }
-
-    if (isADoorLock) {
-      installationDetails.batch_data.push({
-        ...customerPersonDetails,
-        request_description: `${order_number.toString()} - ${title} - installation`,
-        "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${item.id}`,
-      });
-      continue;
-    }
-
-    if (!installationRequired) {
-      installationRequired = title.toLowerCase().includes("free installation");
-    }
+    hasDoorLock = true;
+    installationDetails.batch_data.push({
+      ...customerPersonDetails,
+      request_description: `${order_number.toString()} - ${title} - installation`,
+      "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${id}`,
+    });
   }
 
-  return { installationRequired, installationDetails, isASmartLock };
+  return { installationDetails, hasDoorLock };
 }
-
-const bundles = {
-  "Traditional Smart Lock Security Bundle": "Aqara Smart Door Lock A100 Zigbee",
-  "Advanced Smart Lock Security Bundle": "Aqara Smart Door Lock D100 Zigbee",
-  "Ultimate Smart Lock Security Package": "Aqara Smart Lock D200i",
-  "Affordable Smart Lock Security Bundle":
-    "Aqara Smart Lock U100 (Kit includes Aqara E1 Hub)",
-};
 
 const revalidatePhone = (phone: string) => {
   let validatedPhone = phone;
