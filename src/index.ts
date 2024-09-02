@@ -12,7 +12,7 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 app.get("/", (_req: Request, res: Response) => {
-  console.log(path.join(__dirname, "/index.html"))
+  console.log(path.join(__dirname, "/index.html"));
   return res.sendFile(path.join(__dirname, "/index.html"));
 });
 
@@ -22,14 +22,21 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
     const body = JSON.parse(rawBody.toString());
     const { order_number, shipping_address, line_items }: IOrderDetails = body;
 
-    const { installationDetails, requiresInstallation } =
+    const { installationDetails, requiresInstallation, isLocationFeasible } =
       getInstallationDetails(line_items, shipping_address, order_number);
-    
-    if (!requiresInstallation) {
+
+    if (!isLocationFeasible) {
       return res.status(201).json({
-        message: "Given item doesn't qualify for installation.",
+        message: "Pincode is out of feasible locations",
       });
     }
+
+    if (!requiresInstallation) {
+      return res.status(201).json({
+        message: "Given product doesn't qualify for installation.",
+      });
+    }
+
     await callWifyApi(res, installationDetails);
   } catch (error) {
     console.log(error);

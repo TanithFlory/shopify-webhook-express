@@ -38,7 +38,8 @@ export default function getInstallationDetails(
   order_number: number
 ): {
   installationDetails: OrderRequest;
-  requiresInstallation: boolean;
+  requiresInstallation?: boolean;
+  isLocationFeasible?: boolean;
 } {
   const {
     first_name,
@@ -50,9 +51,8 @@ export default function getInstallationDetails(
     phone,
     province,
   }: IAddress = shipping_address;
-
   if (!doorLockPincodes.includes(Number(zip))) {
-    return { installationDetails: null, requiresInstallation: false };
+    return { installationDetails: null, isLocationFeasible: false };
   }
 
   const today = new Date();
@@ -76,7 +76,7 @@ export default function getInstallationDetails(
     request_req_date: `${futureYear}-${futureMonth}-${futureDay}`,
     request_priority: "Normal",
   };
-  
+
   const installationDetails: OrderRequest = {
     batch_data: [],
   };
@@ -98,7 +98,11 @@ export default function getInstallationDetails(
     });
   }
 
-  return { installationDetails, requiresInstallation };
+  return {
+    installationDetails,
+    requiresInstallation,
+    isLocationFeasible: true,
+  };
 }
 
 const revalidatePhone = (phone: string) => {
