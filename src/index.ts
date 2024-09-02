@@ -4,6 +4,7 @@ import { IOrderDetails } from "./types";
 import getInstallationDetails from "./utils/getInstallationDetails";
 import { callWifyApi } from "./utils/callWifyApi";
 import getRawBody from "raw-body";
+import path = require("path");
 
 dotenv.config();
 
@@ -11,7 +12,8 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 app.get("/", (_req: Request, res: Response) => {
-  return res.send("pong 🏓");
+  console.log(path.join(__dirname, "/index.html"))
+  return res.sendFile(path.join(__dirname, "/index.html"));
 });
 
 app.post("/orders-paid", async (req: Request, res: Response) => {
@@ -20,15 +22,12 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
     const body = JSON.parse(rawBody.toString());
     const { order_number, shipping_address, line_items }: IOrderDetails = body;
 
-    const { installationDetails, hasDoorLock } = getInstallationDetails(
-      line_items,
-      shipping_address,
-      order_number
-    );
+    const { installationDetails, requiresInstallation } =
+      getInstallationDetails(line_items, shipping_address, order_number);
     
-    if (!hasDoorLock) {
+    if (!requiresInstallation) {
       return res.status(201).json({
-        message: "Given item is not a doorlock. Entry not added.",
+        message: "Given item doesn't qualify for installation.",
       });
     }
     await callWifyApi(res, installationDetails);

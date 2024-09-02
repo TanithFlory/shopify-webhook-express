@@ -4,7 +4,7 @@ import { Response } from "express";
 
 export async function callWifyApi(
   res: Response,
-  installationDetails: OrderRequest,
+  installationDetails: OrderRequest
 ) {
   try {
     const response = await fetch(
@@ -19,15 +19,16 @@ export async function callWifyApi(
         body: JSON.stringify(installationDetails),
       }
     );
-    if (!response) return;
+    if (!response) return res.status(500).json({ message: "Error from tms" });
 
     const responseText = await response.text();
 
-    if (!responseText) return;
+    if (!responseText)
+      return res.status(500).json({ message: "Error from tms" });
 
-    const responseData = await JSON.parse(responseText);
-    await newInstallation(responseData.data.resp, res);
-    
+    return res.status(200).json({ message: "Entry added" });
+    // const responseData = await JSON.parse(responseText);
+    // await newInstallation(responseData.data.resp, res);
   } catch (error) {
     console.log(error);
   }
