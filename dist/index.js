@@ -17,21 +17,28 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const getInstallationDetails_1 = __importDefault(require("./utils/getInstallationDetails"));
 const callWifyApi_1 = require("./utils/callWifyApi");
 const raw_body_1 = __importDefault(require("raw-body"));
+const path = require("path");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 8080;
 app.get("/", (_req, res) => {
-    return res.send("pong 🏓");
+    console.log(path.join(__dirname, "/index.html"));
+    return res.sendFile(path.join(__dirname, "/index.html"));
 });
 app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const rawBody = yield (0, raw_body_1.default)(req);
         const body = JSON.parse(rawBody.toString());
         const { order_number, shipping_address, line_items } = body;
-        const { installationDetails, hasDoorLock } = (0, getInstallationDetails_1.default)(line_items, shipping_address, order_number);
-        if (!hasDoorLock) {
+        const { installationDetails, requiresInstallation, isLocationFeasible } = (0, getInstallationDetails_1.default)(line_items, shipping_address, order_number);
+        if (!isLocationFeasible) {
             return res.status(201).json({
-                message: "Given item is not a doorlock. Entry not added.",
+                message: "Pincode is out of feasible locations",
+            });
+        }
+        if (!requiresInstallation) {
+            return res.status(201).json({
+                message: "Given product doesn't qualify for installation.",
             });
         }
         yield (0, callWifyApi_1.callWifyApi)(res, installationDetails);
@@ -94,7 +101,7 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
 //   }
 // });
 app.get("/ping", (_req, res) => {
-    return res.send("pong 🏓");
+    return res.send("pong 🏓 ver 2.0");
 });
 app.listen(port, () => {
     console.log(`Server is listening on ${port}`);

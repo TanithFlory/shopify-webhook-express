@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.callWifyApi = void 0;
-const installationController_1 = require("../controllers/installationController");
 function callWifyApi(res, installationDetails) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -24,12 +23,13 @@ function callWifyApi(res, installationDetails) {
                 body: JSON.stringify(installationDetails),
             });
             if (!response)
-                return;
+                return res.status(500).json({ message: "Error from tms" });
             const responseText = yield response.text();
             if (!responseText)
-                return;
-            const responseData = yield JSON.parse(responseText);
-            yield (0, installationController_1.newInstallation)(responseData.data.resp, res);
+                return res.status(500).json({ message: "Error from tms" });
+            return res.status(200).json({ message: "Entry added" });
+            // const responseData = await JSON.parse(responseText);
+            // await newInstallation(responseData.data.resp, res);
         }
         catch (error) {
             console.log(error);
