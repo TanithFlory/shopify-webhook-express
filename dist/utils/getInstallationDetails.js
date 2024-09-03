@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const skus = [
+    //Door Locks
     "DL-D05D",
     "EL-D02DS",
     "EL-D02DB",
@@ -9,6 +10,7 @@ const skus = [
     "ZNMS16LM",
     "ZNMS20LM",
     "ZNMS02ES",
+    //Switches
     // "WS-K01D",
     // "MS-K01D",
     // "ZNQBKG42LMB",
@@ -58,10 +60,13 @@ function getInstallationDetails(line_items, shipping_address, order_number) {
     // the previous variable 'isSmartLock' will be overwritten.
     let requiresInstallation = false;
     for (const { title, sku, id } of line_items) {
+        if (sku === "FI-DL") {
+            requiresInstallation = true;
+            continue;
+        }
         const compatibleProduct = skus.includes(sku);
         if (!compatibleProduct)
             continue;
-        requiresInstallation = true;
         installationDetails.batch_data.push(Object.assign(Object.assign({}, customerPersonDetails), { request_description: `${order_number.toString()} - ${title} - installation`, "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${id}` }));
     }
     return {
