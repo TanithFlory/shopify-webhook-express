@@ -36,6 +36,11 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
         message: "Given product doesn't qualify for installation.",
       });
     }
+    if (installationDetails.batch_data.length === 0) {
+      return res.status(201).json({
+        message: "Empty batch_data",
+      });
+    }
 
     await callWifyApi(res, installationDetails);
   } catch (error) {
