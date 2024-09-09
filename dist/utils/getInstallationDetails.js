@@ -1,35 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const skus = [
-    //Door Locks
-    "DL-D05D",
-    "EL-D02DS",
-    "EL-D02DB",
-    "DL-D01D",
-    "ML-D01D",
-    "ZNMS16LM",
-    "ZNMS20LM",
-    "ZNMS02ES",
-    //Switches
-    // "WS-K01D",
-    // "MS-K01D",
-    // "ZNQBKG42LMB",
-    // "ZNQBKG43LMB",
-    // "ZNQBKG44LMB",
-    // "ZNQBKG45LMB",
-    // "ZNQBKG42LMW",
-    // "ZNQBKG43LMW",
-    // "ZNQBKG44LMW",
-    // "ZNQBKG45LMW","MP-K01D",
-    // "DCM-K01",
-    // "WS-EUK01",
-    // "WS-EUK02",
-    // "WS-EUK03",
-    // "WS-EUK04",
-    // "SSM-U01",
-    // "SSM-U02",
-    // "QBKG32LM",
-];
 function getInstallationDetails(line_items, shipping_address, order_number) {
     const { first_name, last_name, address1, address2, city, zip, phone, province, } = shipping_address;
     if (!doorLockPincodes.includes(Number(zip))) {
@@ -56,22 +26,39 @@ function getInstallationDetails(line_items, shipping_address, order_number) {
     const installationDetails = {
         batch_data: [],
     };
-    // Define two variables. If the second object doesn't have a 'doorlock' property,
-    // the previous variable 'isSmartLock' will be overwritten.
-    let requiresInstallation = false;
-    for (const { title, sku, id } of line_items) {
+    let requiresDoorLockInstallation = false;
+    let requiresSwitchesInstallation = false;
+    const doorLocks = [];
+    const smartSwitches = [];
+    for (const { title, sku, id, variant_title } of line_items) {
         if (sku === "FI-DL") {
-            requiresInstallation = true;
+            requiresDoorLockInstallation = true;
             continue;
         }
-        const compatibleProduct = skus.includes(sku);
-        if (!compatibleProduct)
+        if (sku === "SL-DI") {
+            requiresSwitchesInstallation = true;
             continue;
-        installationDetails.batch_data.push(Object.assign(Object.assign({}, customerPersonDetails), { request_description: `${order_number.toString()} - ${title} - installation`, "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${id}` }));
+        }
+        const compatibleDoorLock = doorLockSku.includes(sku);
+        const compatibleSwitch = switchesSku.includes(sku);
+        if (!compatibleDoorLock && !compatibleSwitch)
+            continue;
+        const obj = Object.assign(Object.assign({}, customerPersonDetails), { request_description: `${order_number.toString()} - ${title} - installation`, "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${id}` });
+        if (compatibleDoorLock) {
+            doorLocks.push(Object.assign(Object.assign({}, obj), { "83ecad39-bbf0-448c-9b9e-ed43905b730f": "Smart Locks", "a41f271d-a24c-4c3f-a4ce-689dd7c67113": title }));
+        }
+        if (compatibleSwitch) {
+            smartSwitches.push(Object.assign(Object.assign({}, obj), { "83ecad39-bbf0-448c-9b9e-ed43905b730f": "Smart Switches", "5df4b9f0-9601-4223-bea0-f35984d45645": title, "f45415f7-8c28-42ee-8176-697d119e7554": variant_title || "" }));
+        }
     }
+    const itemsToAdd = [
+        ...(requiresDoorLockInstallation ? doorLocks : []),
+        ...(requiresSwitchesInstallation ? smartSwitches : []),
+    ];
+    installationDetails.batch_data.push(...itemsToAdd);
     return {
         installationDetails,
-        requiresInstallation,
+        requiresInstallation: requiresDoorLockInstallation || requiresSwitchesInstallation,
         isLocationFeasible: true,
     };
 }
@@ -175,5 +162,36 @@ const doorLockPincodes = [
     700044, 700008, 700023, 700060, 700027, 700053, 700034, 700063, 700024,
     700018, 700029, 700043, 700088, 700019, 700025, 700086, 700031, 700095,
     700078, 700082, 700022, 700032, 700068, 700042, 700028, 700065, 700107,
+];
+const doorLockSku = [
+    "DL-D05D",
+    "EL-D02DS",
+    "EL-D02DB",
+    "DL-D01D",
+    "ML-D01D",
+    "ZNMS16LM",
+    "ZNMS20LM",
+    "ZNMS02ES",
+];
+const switchesSku = [
+    "WS-K01D",
+    "MS-K01D",
+    "ZNQBKG42LMB",
+    "ZNQBKG43LMB",
+    "ZNQBKG44LMB",
+    "ZNQBKG45LMB",
+    "ZNQBKG42LMW",
+    "ZNQBKG43LMW",
+    "ZNQBKG44LMW",
+    "ZNQBKG45LMW",
+    "MP-K01D",
+    "DCM-K01",
+    "WS-EUK01",
+    "WS-EUK02",
+    "WS-EUK03",
+    "WS-EUK04",
+    "SSM-U01",
+    "SSM-U02",
+    "QBKG32LM",
 ];
 //# sourceMappingURL=getInstallationDetails.js.map
