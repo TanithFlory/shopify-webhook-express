@@ -22,7 +22,6 @@ export async function callWifyApi(
     if (!response) return res.status(500).json({ message: "Error from tms" });
 
     const responseText = await response.text();
-
     if (!responseText)
       return res.status(500).json({ message: "Error from tms" });
 
