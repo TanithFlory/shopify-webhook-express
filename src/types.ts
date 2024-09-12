@@ -13,6 +13,9 @@ export interface IProduct {
   product_id: number;
   title: string;
   quantity: string;
+  variant_title: string;
+  sku: string;
+  id: number;
 }
 
 export interface ICustomerDetails {

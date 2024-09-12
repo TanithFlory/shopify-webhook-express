@@ -32,18 +32,24 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
         const { order_number, shipping_address, line_items } = body;
         const { installationDetails, requiresInstallation, isLocationFeasible } = (0, getInstallationDetails_1.default)(line_items, shipping_address, order_number);
         if (!isLocationFeasible) {
+            const message = "Pincode is out of feasible locations";
+            console.log(message);
             return res.status(201).json({
-                message: "Pincode is out of feasible locations",
+                message,
             });
         }
         if (!requiresInstallation) {
+            const message = "Given product doesn't qualify for installation.";
+            console.log(message);
             return res.status(201).json({
-                message: "Given product doesn't qualify for installation.",
+                message,
             });
         }
         if (installationDetails.batch_data.length === 0) {
+            const message = "Empty batch_data";
+            console.log(message);
             return res.status(201).json({
-                message: "Empty batch_data",
+                message,
             });
         }
         yield (0, callWifyApi_1.callWifyApi)(res, installationDetails);

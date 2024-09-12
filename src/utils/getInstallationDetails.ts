@@ -57,13 +57,13 @@ export default function getInstallationDetails(
   const doorLocks = [];
   const smartSwitches = [];
 
-  for (const { title, sku, id, variant_title } of line_items as any) {
+  for (const { title, sku, id, variant_title } of line_items as line_items) {
     if (sku === "FI-DL") {
       requiresDoorLockInstallation = true;
       continue;
     }
 
-    if (sku === "SL-DI") {
+    if (sku === "FI-SS") {
       requiresSwitchesInstallation = true;
       continue;
     }
@@ -82,7 +82,7 @@ export default function getInstallationDetails(
       doorLocks.push({
         ...obj,
         "83ecad39-bbf0-448c-9b9e-ed43905b730f": "Smart Locks",
-        "a41f271d-a24c-4c3f-a4ce-689dd7c67113": title,
+        "a41f271d-a24c-4c3f-a4ce-689dd7c67113": title, 
       });
     }
 
@@ -102,7 +102,6 @@ export default function getInstallationDetails(
   ];
 
   installationDetails.batch_data.push(...itemsToAdd);
-
   return {
     installationDetails,
     requiresInstallation:

@@ -35,7 +35,7 @@ function getInstallationDetails(line_items, shipping_address, order_number) {
             requiresDoorLockInstallation = true;
             continue;
         }
-        if (sku === "SL-DI") {
+        if (sku === "FI-SS") {
             requiresSwitchesInstallation = true;
             continue;
         }
