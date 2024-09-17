@@ -21,7 +21,7 @@
  *
  * @property {"5df4b9f0-9601-4223-bea0-f35984d45645"}  - Title of the Smart Switch.
  *
- * @property {"a41f271d-a24c-4c3f-a4ce-689dd7c67113"}  - Title of the Smart Switch.
+ * @property {"a41f271d-a24c-4c3f-a4ce-689dd7c67113"}  - Title of the Door Lock.
  *
  * @property {"6062b5a9-8338-4757-b559-02c05ca7631f"} - Quantity of Smart Switches.
  *
@@ -75,12 +75,12 @@ function getInstallationDetails(line_items, shipping_address, order_number) {
         const compatibleSwitch = switchesSku.includes(sku);
         if (!compatibleDoorLock && !compatibleSwitch)
             continue;
-        const obj = Object.assign(Object.assign({}, customerPersonDetails), { request_description: `${order_number.toString()} - ${title} - installation`, "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${id}`, "6062b5a9-8338-4757-b559-02c05ca7631f": quantity.toString(), "a41f271d-a24c-4c3f-a4ce-689dd7c67113": title });
+        const obj = Object.assign(Object.assign({}, customerPersonDetails), { request_description: `${order_number.toString()} - ${title} - installation`, "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${id}`, "6062b5a9-8338-4757-b559-02c05ca7631f": quantity.toString() });
         if (compatibleDoorLock && feasibleDoorLockPin) {
-            doorLocks.push(Object.assign(Object.assign({}, obj), { "83ecad39-bbf0-448c-9b9e-ed43905b730f": "Smart Locks" }));
+            doorLocks.push(Object.assign(Object.assign({}, obj), { "83ecad39-bbf0-448c-9b9e-ed43905b730f": "Smart Locks", "a41f271d-a24c-4c3f-a4ce-689dd7c67113": title }));
         }
         if (compatibleSwitch && feasibleSmartSwitchPin) {
-            smartSwitches.push(Object.assign(Object.assign({}, obj), { "83ecad39-bbf0-448c-9b9e-ed43905b730f": "Smart Switches", "f45415f7-8c28-42ee-8176-697d119e7554": variant_title || "" }));
+            smartSwitches.push(Object.assign(Object.assign({}, obj), { "83ecad39-bbf0-448c-9b9e-ed43905b730f": "Smart Switches", "5df4b9f0-9601-4223-bea0-f35984d45645": title, "f45415f7-8c28-42ee-8176-697d119e7554": variant_title || "" }));
         }
     }
     const itemsToAdd = [
