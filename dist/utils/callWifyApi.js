@@ -25,6 +25,7 @@ function callWifyApi(res, installationDetails) {
             if (!response)
                 return res.status(500).json({ message: "Error from tms" });
             const responseText = yield response.text();
+            console.log(responseText);
             if (!responseText)
                 return res.status(500).json({ message: "Error from tms" });
             return res.status(200).json({ message: "Entry added" });

@@ -24,7 +24,6 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
 
     const { installationDetails, requiresInstallation, isLocationFeasible } =
       getInstallationDetails(line_items, shipping_address, order_number);
-
     if (!isLocationFeasible) {
       const message = "Pincode is out of feasible locations";
       console.log(message);
@@ -44,11 +43,13 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
       const message = "Empty batch_data";
 
       console.log(message);
+
       return res.status(201).json({
         message,
       });
     }
-    await callWifyApi(res, installationDetails);
+    // console.log(installationDetails);
+    // await callWifyApi(res, installationDetails);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ Message: "Error" });

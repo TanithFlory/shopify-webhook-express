@@ -1,3 +1,34 @@
+/**
+ * Determines whether installation services are required for an order based on its line items
+ * and the shipping address. The function evaluates whether the order includes items requiring
+ * installation, checks if the shipping pincode is feasible for installation, and returns an
+ * object containing installation-related details.
+ *
+ * @function
+ * @param {Array} line_items - The list of line items in the order, where each item is an object
+ *                            that may contain installation-related data.
+ * @param {Object} shipping_address - The shipping address of the order, containing location details.
+ * @param {number} orders_number - The order number that Shopify - Modo uses to determine which customer bought it.
+ *
+ * @returns {Object} An object containing installation details:
+ * @returns {boolean} returns.requiresInstallation - Indicates if installation is required.
+ * @returns {boolean} returns.isLocationFeasible - Indicates if the pincode is valid for installation.
+ * @returns {Array} returns.installationDetails - A list of items requiring installation.
+ *
+ *  @property {"83ecad39-bbf0-448c-9b9e-ed43905b730f"}  - Smart Switches or Smart Locks.
+ * This UUID refers to the type of product. It can represent categories like 'Smart Switches' or 'Smart Locks.'
+ *
+ * @property {"5df4b9f0-9601-4223-bea0-f35984d45645"}  - Title of the Smart Switch.
+ *
+ * @property {"a41f271d-a24c-4c3f-a4ce-689dd7c67113"}  - Title of the Smart Switch.
+ *
+ * @property {"6062b5a9-8338-4757-b559-02c05ca7631f"} - Quantity of Smart Switches.
+ *
+ * @property {"f45415f7-8c28-42ee-8176-697d119e7554"}  - Variant of the Smart Switch.
+ * This UUID refers to the variant of the Smart Switch, used to differentiate between versions or models within the Smart Switch category.
+ *
+ **/
+
 import { IAddress, OrderRequest, line_items, Batch } from "../../src/types";
 type CustomerPersonDetails = Omit<
   Batch,
@@ -22,7 +53,10 @@ export default function getInstallationDetails(
     phone,
     province,
   }: IAddress = shipping_address;
-  if (!doorLockPincodes.includes(Number(zip))) {
+  const feasibleDoorLockPin = doorLockPincodes.includes(Number(zip));
+  const feasibleSmartSwitchPin = smartSwitchPincodes.includes(Number(zip));
+
+  if (!feasibleDoorLockPin && !feasibleSmartSwitchPin) {
     return { installationDetails: null, isLocationFeasible: false };
   }
 
@@ -56,8 +90,14 @@ export default function getInstallationDetails(
   let requiresSwitchesInstallation = false;
   const doorLocks = [];
   const smartSwitches = [];
-
-  for (const { title, sku, id, variant_title } of line_items as line_items) {
+  console.log(line_items)
+  for (const {
+    title,
+    sku,
+    id,
+    variant_title,
+    quantity,
+  } of line_items as line_items) {
     if (sku === "FI-DL") {
       requiresDoorLockInstallation = true;
       continue;
@@ -77,20 +117,21 @@ export default function getInstallationDetails(
       ...customerPersonDetails,
       request_description: `${order_number.toString()} - ${title} - installation`,
       "79a88c7b-c64f-46c4-a277-bc80efa1c154": `${id}`,
+      "6062b5a9-8338-4757-b559-02c05ca7631f": quantity.toString(),
+      "a41f271d-a24c-4c3f-a4ce-689dd7c67113": title,
     };
-    if (compatibleDoorLock) {
+
+    if (compatibleDoorLock && feasibleDoorLockPin) {
       doorLocks.push({
         ...obj,
         "83ecad39-bbf0-448c-9b9e-ed43905b730f": "Smart Locks",
-        "a41f271d-a24c-4c3f-a4ce-689dd7c67113": title, 
       });
     }
 
-    if (compatibleSwitch) {
+    if (compatibleSwitch && feasibleSmartSwitchPin) {
       smartSwitches.push({
         ...obj,
         "83ecad39-bbf0-448c-9b9e-ed43905b730f": "Smart Switches",
-        "5df4b9f0-9601-4223-bea0-f35984d45645": title,
         "f45415f7-8c28-42ee-8176-697d119e7554": variant_title || "",
       });
     }
@@ -243,4 +284,22 @@ const switchesSku = [
   "SSM-U01",
   "SSM-U02",
   "QBKG32LM",
+];
+
+const smartSwitchPincodes = [
+  400067, 400053, 400104, 400064, 400092, 400063, 400066, 400101, 400061,
+  400049, 401107, 400091, 400097, 401101, 400058, 400102, 400089, 400037,
+  401105, 400072, 400095, 400060, 400017, 400043, 400093, 400055, 400074,
+  400056, 400057, 400068, 400071, 400103, 400059, 110092, 401602, 400029,
+  401501, 400062, 400069, 411038, 400065, 500050, 500010, 500090, 500035,
+  500008, 500089, 400081, 500015, 500055, 500018, 500032, 500028, 500011,
+  400050, 500044, 500088, 500033, 500019, 500079, 400076, 500091, 500060,
+  500072, 500042, 500084, 500085, 500075, 500062, 500049, 500046, 500039,
+  400014, 500009, 500002, 500070, 400086, 500086, 500083, 500059, 500013,
+  500097, 500047, 500027, 500040, 500098, 500073, 500080, 500081, 400013,
+  500074, 400052, 500003, 400078, 500048, 500045, 400015, 500076, 500034,
+  400025, 400709, 500061, 500082, 500026, 400028, 400024, 400708, 500093,
+  400005, 500043, 400051, 500014, 500016, 500004, 500068, 500087, 500017,
+  500020, 401107, 500029, 400022, 500094, 400070, 500036, 400042, 500037,
+  500038, 500064, 500058, 500092,
 ];
