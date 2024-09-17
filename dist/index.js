@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const getInstallationDetails_1 = __importDefault(require("./utils/getInstallationDetails"));
+const callWifyApi_1 = require("./utils/callWifyApi");
 const raw_body_1 = __importDefault(require("raw-body"));
 const path = require("path");
 dotenv_1.default.config();
@@ -51,8 +52,7 @@ app.post("/orders-paid", (req, res) => __awaiter(void 0, void 0, void 0, functio
                 message,
             });
         }
-        // console.log(installationDetails);
-        // await callWifyApi(res, installationDetails);
+        yield (0, callWifyApi_1.callWifyApi)(res, installationDetails);
     }
     catch (error) {
         console.log(error);

@@ -62,7 +62,6 @@ function getInstallationDetails(line_items, shipping_address, order_number) {
     let requiresSwitchesInstallation = false;
     const doorLocks = [];
     const smartSwitches = [];
-    console.log(line_items);
     for (const { title, sku, id, variant_title, quantity, } of line_items) {
         if (sku === "FI-DL") {
             requiresDoorLockInstallation = true;

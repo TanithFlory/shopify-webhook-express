@@ -90,7 +90,6 @@ export default function getInstallationDetails(
   let requiresSwitchesInstallation = false;
   const doorLocks = [];
   const smartSwitches = [];
-  console.log(line_items)
   for (const {
     title,
     sku,

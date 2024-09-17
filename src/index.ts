@@ -48,8 +48,7 @@ app.post("/orders-paid", async (req: Request, res: Response) => {
         message,
       });
     }
-    // console.log(installationDetails);
-    // await callWifyApi(res, installationDetails);
+    await callWifyApi(res, installationDetails);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ Message: "Error" });
